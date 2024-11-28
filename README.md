@@ -1,4 +1,6 @@
-# **Objective of the Project**
+# **Mern Challenge**
+
+## **Objective of the Project**
 
 The goal of this project is to develop a **Task Management Web Application** using the **MERN (MongoDB, Express, React, Node.js) stack**. This application should provide users with a seamless experience to manage their tasks, including features such as user authentication, task creation, updating, and deletion, all while ensuring a secure and responsive user interface.
 
