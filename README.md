@@ -49,3 +49,10 @@ The final product will be a fully functioning task management application, deliv
 | **React Dev Tools**   | Debugging React apps                   | [React DevTools](https://reactjs.org/)   |
 
 ---
+
+
+
+Sources: 
+https://github.com/burakorkmez/mern-crash-course
+https://www.youtube.com/watch?v=O3BUHwfHf84
+
