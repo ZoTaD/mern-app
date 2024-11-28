@@ -53,6 +53,8 @@ The final product will be a fully functioning task management application, deliv
 
 
 Sources: 
+
 https://github.com/burakorkmez/mern-crash-course
+
 https://www.youtube.com/watch?v=O3BUHwfHf84
 
