@@ -1,62 +1,59 @@
-# **Mern Challenge**
+# Proyecto MERN - Setup Inicial
 
-## **Objective of the Project**
+Este proyecto consiste en la configuración inicial de una aplicación utilizando el stack MERN (MongoDB, Express, React, Node.js). El objetivo fue crear una estructura básica y realizar las conexiones necesarias para que todas las partes del stack funcionen conjuntamente.
 
-The goal of this project is to develop a **Task Management Web Application** using the **MERN (MongoDB, Express, React, Node.js) stack**. This application should provide users with a seamless experience to manage their tasks, including features such as user authentication, task creation, updating, and deletion, all while ensuring a secure and responsive user interface.
+## Tecnologías Utilizadas
+- **MongoDB**: Base de datos corriendo en un contenedor Docker.
+- **Express**: Framework para el backend de Node.js.
+- **React**: Frontend de la aplicación.
+- **Node.js**: Entorno para el backend.
+- **Docker**: Para contenerizar MongoDB.
 
-## **Key Features**
-1. **User Authentication:**
-   - Secure registration and login functionality using JWT-based authentication.
+## Pasos Realizados
+1. **Estructura del Proyecto**:
+   - Creación de la estructura de carpetas: `client` para el frontend (React) y `server` para el backend (Node.js + Express).
 
-2. **Task Management:**
-   - CRUD operations for tasks:
-     - Create tasks with a title and description.
-     - View a list of tasks.
-     - Edit existing tasks.
-     - Delete tasks.
+2. **Conexión a MongoDB**:
+   - Se levantó una instancia de MongoDB usando Docker.
+   - Configuración de `mongoose` en el backend para conectar a la base de datos MongoDB.
 
-3. **Role-Based Access:**
-   - Ensure only authenticated users can manage their tasks.
+3. **Configuración del Backend**:
+   - Se creó un servidor Express y se agregó una ruta raíz (`/`) para confirmar el estado del backend.
+   - Se implementó una ruta de ejemplo (`/api/login`) para recibir credenciales de usuario y validar el login.
 
-4. **Frontend:**
-   - A responsive and user-friendly dashboard for task management.
-   - A modern React-based design.
+4. **Conexión del Frontend con el Backend**:
+   - Se configuró la URL del backend en el frontend utilizando un archivo `.env`.
+   - Se realizó una solicitud GET desde React al endpoint `/` para probar la conexión.
+   - Se implementó un formulario básico de login que realiza una solicitud GET al backend para enviar credenciales.
 
-5. **Backend:**
-   - RESTful APIs built with Express.js.
-   - MongoDB database for data storage and retrieval.
+## Ejecución del Proyecto
 
-6. **Integration:**
-   - Full integration between frontend and backend with proper state management using Redux.
+1. **Levantar el Backend**:
+   ```bash
+   cd server
+   npm run dev
+   ```
+   El backend correrá en `http://localhost:5000`.
 
-7. **Deployment:**
-   - The application will be deployed to platforms such as Heroku (backend) and Netlify (frontend) to provide public access.
+2. **Levantar el Frontend**:
+   ```bash
+   cd client
+   npm start
+   ```
+   El frontend estará disponible en `http://localhost:3000`.
 
-## **End Goal**
-The final product will be a fully functioning task management application, delivered as a deployable and scalable web application. This project will demonstrate an end-to-end understanding of the MERN stack and good development practices, suitable for inclusion in a portfolio or as a learning challenge for developers.
+## Notas
+- La conexión entre el frontend y backend se realizó utilizando la API `fetch`.
+- Se agregó el middleware `cors` al backend para permitir la comunicación entre el frontend y el backend.
+- express: Para manejar el servidor web en Node.js.
+- mongoose: Para la conexión a MongoDB.
+- dotenv: Para cargar variables de entorno.
+- cors: Comunicación entre el frontend y backend.
+- bcryptjs: Utilizado para hashing de contraseñas.
+- jsonwebtoken: Utilizado para la autenticación a través de tokens JWT.
 
----
-
-# **Summary of Tools**
-
-| Tool/Software        | Purpose                                 | Installation Link                        |
-|-----------------------|-----------------------------------------|------------------------------------------|
-| **WSL2**             | Linux environment                      | [WSL Installation](https://aka.ms/wsl)  |
-| **Visual Studio Code**| Code editor                            | [VS Code Download](https://code.visualstudio.com/) |
-| **Node.js**           | Backend runtime                        | [Node.js](https://nodejs.org/)           |
-| **MongoDB**           | Database                               | [MongoDB](https://www.mongodb.com/)      |
-| **Docker**            | Containerization                       | [Docker](https://www.docker.com/products/docker-desktop) |
-| **Git**               | Version control                        | [Git](https://git-scm.com/)              |
-| **Postman**           | API testing                            | [Postman](https://www.postman.com/)      |
-| **React Dev Tools**   | Debugging React apps                   | [React DevTools](https://reactjs.org/)   |
-
----
-
-
-
-Sources: 
-
-https://github.com/burakorkmez/mern-crash-course
-
-https://www.youtube.com/watch?v=O3BUHwfHf84
-
+- axios: Utilizado para realizar solicitudes HTTP al backend.
+- react-router-dom: Utilizado para manejar el enrutamiento en la aplicación React (para navegar entre    
+diferentes páginas/componentes).
+- redux: Utilizado para el manejo de estado global en la aplicación React.
+- redux-thunk: Middleware de Redux que permite manejar acciones asíncronas, útil cuando se necesitan hacer solicitudes API y manejar los resultados de forma adecuada en el estado global.
