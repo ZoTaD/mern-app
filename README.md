@@ -57,3 +57,8 @@ Este proyecto consiste en la configuración inicial de una aplicación utilizand
 diferentes páginas/componentes).
 - redux: Utilizado para el manejo de estado global en la aplicación React.
 - redux-thunk: Middleware de Redux que permite manejar acciones asíncronas, útil cuando se necesitan hacer solicitudes API y manejar los resultados de forma adecuada en el estado global.
+
+
+##Imagenes de las pruebas
+![Login de usuario](./images/Postman1.png)
+![Registro de usuario](./images/Postman2.png)
