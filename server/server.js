@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes.js';
+import taskRoutes from './routes/taskRoutes.js';
 
 dotenv.config(); // Cargo variables de entorno
 
@@ -21,6 +22,8 @@ mongoose.connect(process.env.MONGODB_URI, {
 
 // Registro de rutas
 app.use('/api/auth', authRoutes);
+app.use('/api/tasks', taskRoutes);
+
 
 app.get('/api/health', (req, res) => {
     res.send('Server is running');
