@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 function Login({ onSwitchToRegister }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const navigate = useNavigate();  // inicializa el hook de navegacion
 
     // validacion de inputs
     const validateInputs = () => {
@@ -31,6 +33,9 @@ function Login({ onSwitchToRegister }) {
                 password,
             });
             console.log('Login exitoso:', response.data);
+            localStorage.setItem('token', response.data.token);
+            console.log('Token guardado:', response.data.token);
+            navigate('/home');  // redirecciona a la ruta /home
             setError('');
         } catch (err) {
             setError('Credenciales incorrectas');
