@@ -1,32 +1,44 @@
 import express from 'express';
 import Task from '../models/task.js';
+import jwt from 'jsonwebtoken';
 
 const router = express.Router();
 
+// Middleware para autenticar al usuario
+const authenticate = (req, res, next) => {
+    const token = req.headers.authorization?.split(' ')[1]; // Extraer el token del encabezado
+    if (!token) {
+        return res.status(401).json({ message: 'No autorizado' }); // Si no hay token
+    }
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET); // Verificar el token
+        req.userId = decoded.id; // Almacenar el ID del usuario
+        next();
+    } catch (err) {
+        return res.status(401).json({ message: 'Token inválido' });
+    }
+};
+
 // Endpoint para crear una nueva tarea
-router.post('/', async (req, res) => {
-    console.log('Solicitud POST recibida en /tasks con datos:', req.body);
+router.post('/', authenticate, async (req, res) => {
     const { title, description } = req.body;
-    // Creo una nueva tarea
     try {
         const newTask = new Task({
             title,
             description,
+            user: req.userId, // Asociar la tarea al usuario autenticado
         });
-        // Guardo la tarea en la base de datos
         await newTask.save();
-        // Devuelvo la tarea creada
         res.status(201).json(newTask);
     } catch (error) {
         res.status(500).json({ message: 'Error al crear la tarea' });
     }
 });
 
-// Endpoint para obtener todas las tareas
-router.get('/', async (req, res) => {
+// Endpoint para obtener todas las tareas del usuario autenticado
+router.get('/', authenticate, async (req, res) => {
     try {
-        // Buscar las tareas en la base de datos
-        const tasks = await Task.find();
+        const tasks = await Task.find({ user: req.userId }); // Filtrar tareas por el ID del usuario
         res.status(200).json(tasks);
     } catch (error) {
         res.status(500).json({ message: 'Error al obtener las tareas' });
@@ -34,44 +46,36 @@ router.get('/', async (req, res) => {
 });
 
 // Endpoint para actualizar una tarea
-router.put('/:id', async (req, res) => {
-    const { id } = req.params; // Obtenemos el ID de la tarea desde los parámetros de la URL
-    const { title, description, completed } = req.body; // Nuevos datos de la tarea
+router.put('/:id', authenticate, async (req, res) => {
+    const { id } = req.params;
+    const { title, description, completed } = req.body;
     try {
-        // Actualizamos la tarea con el ID proporcionado
-        const updatedTask = await Task.findByIdAndUpdate(
-            id,
+        const updatedTask = await Task.findOneAndUpdate(
+            { _id: id, user: req.userId },
             { title, description, completed },
-            { new: true } // Esto hace que la respuesta devuelva la tarea ya actualizada
+            { new: true }
         );
-        // Si la tarea no se encuentra, enviamos un error 404
         if (!updatedTask) {
-            return res.status(404).json({ message: 'Tarea no encontrada' });
+            return res.status(404).json({ message: 'Tarea no encontrada o no autorizada' });
         }
-        // Respondemos con la tarea actualizada
         res.status(200).json(updatedTask);
     } catch (error) {
         res.status(500).json({ message: 'Error al actualizar la tarea' });
     }
 });
 
-// Endpoint para eliminar una tarea 
-router.delete('/:id', async (req, res) => {
-    const { id } = req.params; // Obtenemos el ID de la tarea desde los parámetros de la URL
+// Endpoint para eliminar una tarea
+router.delete('/:id', authenticate, async (req, res) => {
+    const { id } = req.params;
     try {
-        // Intentamos eliminar la tarea con el ID proporcionado
-        const deletedTask = await Task.findByIdAndDelete(id);
-        // Si la tarea no se encuentra, enviamos un error 404
+        const deletedTask = await Task.findOneAndDelete({ _id: id, user: req.userId });
         if (!deletedTask) {
-            return res.status(404).json({ message: 'Tarea no encontrada' });
+            return res.status(404).json({ message: 'Tarea no encontrada o no autorizada' });
         }
-        // Respondemos con un mensaje de éxito
         res.status(200).json({ message: 'Tarea eliminada con éxito' });
     } catch (error) {
         res.status(500).json({ message: 'Error al eliminar la tarea' });
     }
 });
 
-
 export default router;
-
