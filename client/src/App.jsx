@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Login from './components/login';
 import Register from './components/register';
 import Home from './components/home';
+import { Container, Row } from 'react-bootstrap';
 
 function App() {
     const [isRegistering, setIsRegistering] = useState(false);
@@ -13,30 +14,28 @@ function App() {
 
     return (
         <Router>
-            <div>
-                <h1>Aplicación MERN</h1>
-                <Routes>
-                    {/* Ruta principal */}
-                    <Route
-                        path="/"
-                        element={
-                            isRegistering ? (
-                                <div>
-                                    <Register />
-                                    <button onClick={handleToggle}>← Volver al Login</button>
-                                </div>
-                            ) : (
-                                <div>
-                                    <Login onSwitchToRegister={handleToggle} />
-                                    <button onClick={handleToggle}>Registrarse</button>
-                                </div>
-                            )
-                        }
-                    />
-                    {/* Ruta para el Home */}
-                    <Route path="/home" element={<Home />} />
-                </Routes>
-            </div>
+            <Container
+                className="d-flex justify-content-center align-items-center"
+                style={{ minHeight: '100vh', backgroundColor: '#f8f9fa' }} // Fondo gris claro
+            >
+                <Row className="w-100">
+                    <Routes>
+                        {/* Ruta principal con Login y Registro */}
+                        <Route
+                            path="/"
+                            element={
+                                isRegistering ? (
+                                    <Register onSwitchToLogin={handleToggle} /> // Botón para volver al Login en el Register
+                                ) : (
+                                    <Login onSwitchToRegister={handleToggle} /> // Botón para ir al Register en el Login
+                                )
+                            }
+                        />
+                        {/* Ruta para el Home */}
+                        <Route path="/home" element={<Home />} />
+                    </Routes>
+                </Row>
+            </Container>
         </Router>
     );
 }

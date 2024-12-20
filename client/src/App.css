@@ -13,6 +13,17 @@
   }
 }
 
+.fullscreen-container {
+  background-color: #2e2e2e; /* Fondo gris oscuro mate */
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+}
+
+
 .App-header {
   background-color: #282c34;
   min-height: 100vh;

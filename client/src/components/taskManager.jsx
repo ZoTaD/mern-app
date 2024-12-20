@@ -1,123 +1,129 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchTasks, createTask, updateTask, deleteTask } from '../store/taskSlice';
+import { Table, Form, Button, Container, Row, Col } from 'react-bootstrap';
 
 function TaskManager() {
-    const [tasks, setTasks] = useState([]); // Almacenar todas las tareas
-    const [newTask, setNewTask] = useState({ title: '', description: '' }); // Nueva tarea
-    const [editingTask, setEditingTask] = useState(null); // Tarea en modo edición
+    const dispatch = useDispatch();
+    const { tasks, loading, error } = useSelector((state) => state.tasks);
+
+    const [newTask, setNewTask] = useState({ title: '', description: '' });
+    const [editingTask, setEditingTask] = useState(null);
 
     useEffect(() => {
-        const fetchTasks = async () => {
-            try {
-                const token = localStorage.getItem('token');
-                const response = await axios.get('http://localhost:5000/api/tasks', {
-                    headers: { Authorization: `Bearer ${token}` },
-                });
-                setTasks(response.data);
-            } catch (error) {
-                console.log('Error al obtener las tareas:', error.response?.data || error.message);
-            }
-        };
+        dispatch(fetchTasks());
+    }, [dispatch]);
 
-        fetchTasks();
-    }, []);
-
-    // Crear una nueva tarea
-    const handleCreateTask = async (e) => {
+    const handleCreateTask = (e) => {
         e.preventDefault();
-        try {
-            const token = localStorage.getItem('token');
-            const response = await axios.post('http://localhost:5000/api/tasks', newTask, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
-            setTasks([...tasks, response.data]);
-            setNewTask({ title: '', description: '' });
-        } catch (error) {
-            console.log('Error al crear la tarea:', error.response?.data || error.message);
-        }
+        dispatch(createTask(newTask));
+        setNewTask({ title: '', description: '' });
     };
 
-    // Editar una tarea existente
-    const handleUpdateTask = async (e) => {
+    const handleUpdateTask = (e) => {
         e.preventDefault();
-        try {
-            const token = localStorage.getItem('token');
-            const response = await axios.put(
-                `http://localhost:5000/api/tasks/${editingTask._id}`,
-                { title: newTask.title, description: newTask.description },
-                {
-                    headers: { Authorization: `Bearer ${token}` },
-                }
-            );
-            // Actualizar la lista de tareas con la tarea editada
-            setTasks(tasks.map((task) => (task._id === editingTask._id ? response.data : task)));
-            setEditingTask(null);
-            setNewTask({ title: '', description: '' });
-        } catch (error) {
-            console.log('Error al actualizar la tarea:', error.response?.data || error.message);
-        }
+        dispatch(updateTask({ id: editingTask._id, data: newTask }));
+        setEditingTask(null);
+        setNewTask({ title: '', description: '' });
     };
 
-    // Eliminar una tarea
-    const handleDeleteTask = async (id) => {
-        try {
-            const token = localStorage.getItem('token');
-            await axios.delete(`http://localhost:5000/api/tasks/${id}`, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
-            setTasks(tasks.filter((task) => task._id !== id));
-        } catch (error) {
-            console.log('Error al eliminar la tarea:', error.response?.data || error.message);
-        }
+    const handleDeleteTask = (id) => {
+        dispatch(deleteTask(id));
     };
 
-    // Establecer el modo edición
     const handleEditClick = (task) => {
-        setEditingTask(task); // Configurar la tarea en edición
-        setNewTask({ title: task.title, description: task.description }); // Prellenar el formulario
+        setEditingTask(task);
+        setNewTask({ title: task.title, description: task.description });
     };
 
     return (
-        <div>
-            <h3>Gestión de tareas</h3>
-
-            {/* Formulario para crear o editar tareas */}
-            <form onSubmit={editingTask ? handleUpdateTask : handleCreateTask}>
-                <input
-                    type="text"
-                    placeholder="Título"
-                    value={newTask.title}
-                    onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
-                />
-                <input
-                    type="text"
-                    placeholder="Descripción"
-                    value={newTask.description}
-                    onChange={(e) => setNewTask({ ...newTask, description: e.target.value })}
-                />
-                <button type="submit">{editingTask ? 'Actualizar Tarea' : 'Agregar Tarea'}</button>
-                {editingTask && (
-                    <button type="button" onClick={() => setEditingTask(null)}>
-                        Cancelar
-                    </button>
-                )}
-            </form>
-
-            {/* Lista de tareas */}
-            {tasks.length > 0 ? (
-                <ul>
-                    {tasks.map((task) => (
-                        <li key={task._id}>
-                            <strong>{task.title}</strong>: {task.description}
-                            <button onClick={() => handleEditClick(task)}>Editar</button>
-                            <button onClick={() => handleDeleteTask(task._id)}>Eliminar</button>
-                        </li>
-                    ))}
-                </ul>
-            ) : (
-                <p>No tienes tareas aún.</p>
-            )}
-        </div>
+        <Container>
+            <Row>
+                <Col>
+                    <h2 className="text-center mb-4">Gestión de tareas</h2>
+                    <Form onSubmit={editingTask ? handleUpdateTask : handleCreateTask}>
+                        <Row>
+                            <Col md={4}>
+                                <Form.Control
+                                    type="text"
+                                    placeholder="Título"
+                                    value={newTask.title}
+                                    onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
+                                    className="mb-2"
+                                />
+                            </Col>
+                            <Col md={4}>
+                                <Form.Control
+                                    type="text"
+                                    placeholder="Descripción"
+                                    value={newTask.description}
+                                    onChange={(e) => setNewTask({ ...newTask, description: e.target.value })}
+                                    className="mb-2"
+                                />
+                            </Col>
+                            <Col md="auto">
+                                <Button type="submit" variant="primary" className="mb-2">
+                                    {editingTask ? 'Actualizar' : 'Agregar'}
+                                </Button>
+                                {editingTask && (
+                                    <Button
+                                        variant="secondary"
+                                        onClick={() => setEditingTask(null)}
+                                        className="mb-2 ms-2"
+                                    >
+                                        Cancelar
+                                    </Button>
+                                )}
+                            </Col>
+                        </Row>
+                    </Form>
+                </Col>
+            </Row>
+            <Row>
+                <Col>
+                    {loading ? (
+                        <p className="text-center">Cargando tareas...</p>
+                    ) : error ? (
+                        <p className="text-center text-danger">Error: {error}</p>
+                    ) : (
+                        <Table striped bordered hover>
+                            <thead>
+                                <tr>
+                                    <th>Título</th>
+                                    <th>Descripción</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {tasks.map((task) => (
+                                    <tr key={task._id}>
+                                        <td>{task.title}</td>
+                                        <td>{task.description}</td>
+                                        <td>
+                                            <Button
+                                                variant="warning"
+                                                size="sm"
+                                                className="me-2"
+                                                onClick={() => handleEditClick(task)}
+                                            >
+                                                Editar
+                                            </Button>
+                                            <Button
+                                                variant="danger"
+                                                size="sm"
+                                                onClick={() => handleDeleteTask(task._id)}
+                                            >
+                                                Eliminar
+                                            </Button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </Table>
+                    )}
+                </Col>
+            </Row>
+        </Container>
     );
 }
 

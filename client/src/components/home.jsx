@@ -1,19 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import TaskManager from './taskManager'; // Importar TaskManager
+import TaskManager from './taskManager';
+import { Container, Row, Col, Button } from 'react-bootstrap';
 
 function Home() {
-    const [name, setName] = useState(''); // Estado para el nombre del usuario
+    const [name, setName] = useState('');
     const navigate = useNavigate();
 
     useEffect(() => {
         const fetchUserData = async () => {
-            console.log('Iniciando fetch de datos del usuario...');
             try {
                 const token = localStorage.getItem('token');
                 if (!token) {
-                    console.log('Token no encontrado, redirigiendo al login...');
                     navigate('/');
                     return;
                 }
@@ -21,31 +20,38 @@ function Home() {
                 const userResponse = await axios.get('http://localhost:5000/api/user', {
                     headers: { Authorization: `Bearer ${token}` },
                 });
-                setName(userResponse.data.name); // Guardar el nombre del usuario
-                console.log('Nombre del usuario recibido:', userResponse.data.name);
+                setName(userResponse.data.name);
             } catch (error) {
-                console.log('Error durante la obtención de datos:', error.response?.data || error.message);
-                navigate('/'); // Redirigir al login en caso de error
+                navigate('/');
             }
         };
 
         fetchUserData();
     }, [navigate]);
 
-    // Función para cerrar sesión
     const handleLogout = () => {
-        localStorage.removeItem('token'); // Eliminar el token del almacenamiento local
+        localStorage.removeItem('token');
         navigate('/');
     };
 
     return (
-        <div>
-            <h2>Bienvenido, {name}</h2>
-            <button onClick={handleLogout}>Cerrar sesión</button>
-
-            {/* Renderizar TaskManager */}
-            <TaskManager />
-        </div>
+        <Container fluid style={{ minHeight: '100vh', backgroundColor: '#f8f9fa', paddingTop: '20px' }}>
+            <Row className="align-items-center mb-4">
+                <Col>
+                    <h1 className="text-center">Bienvenido, {name}</h1>
+                </Col>
+                <Col xs="auto" className="text-end">
+                    <Button variant="danger" onClick={handleLogout}>
+                        Cerrar sesión
+                    </Button>
+                </Col>
+            </Row>
+            <Row>
+                <Col>
+                    <TaskManager />
+                </Col>
+            </Row>
+        </Container>
     );
 }
 
