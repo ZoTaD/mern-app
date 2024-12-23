@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes.js';
 import taskRoutes from './routes/taskRoutes.js';
 import userRoutes from './routes/userRoutes.js';
+dotenv.config();
 
 
 const MONGO_URI = process.env.MONGO_URI;
@@ -13,10 +14,6 @@ if (!MONGO_URI) {
   process.exit(1);
 }
 
-// Carga las variables de entorno en desarrollo
-if (process.env.NODE_ENV !== 'production') {
-    dotenv.config();
-}
 
 const app = express();
 app.use(cors()); // Permitir conexiones desde el frontend
