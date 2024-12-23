@@ -25,7 +25,7 @@ app.use(cors()); // Permitir conexiones desde el frontend
 app.use(express.json()); // Parsear JSON en las peticiones
 
 // Conexión a MongoDB
-mongoose.connect(MONGODB_URI, {
+mongoose.connect(MONGO_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 })
