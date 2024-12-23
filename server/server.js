@@ -5,8 +5,8 @@ import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes.js';
 import taskRoutes from './routes/taskRoutes.js';
 import userRoutes from './routes/userRoutes.js';
-dotenv.config();
 
+dotenv.config();
 
 const MONGO_URI = process.env.MONGO_URI;
 if (!MONGO_URI) {
