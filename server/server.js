@@ -6,6 +6,13 @@ import authRoutes from './routes/authRoutes.js';
 import taskRoutes from './routes/taskRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 
+
+const MONGO_URI = process.env.MONGO_URI;
+if (!MONGO_URI) {
+  console.error("Error: MongoDB URI no está definido en las variables de entorno.");
+  process.exit(1);
+}
+
 // Carga las variables de entorno en desarrollo
 if (process.env.NODE_ENV !== 'production') {
     dotenv.config();
