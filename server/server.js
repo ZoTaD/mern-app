@@ -6,7 +6,10 @@ import authRoutes from './routes/authRoutes.js';
 import taskRoutes from './routes/taskRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 
-dotenv.config(); // Cargo variables de entorno
+// Carga las variables de entorno en desarrollo
+if (process.env.NODE_ENV !== 'production') {
+    dotenv.config();
+}
 
 const app = express();
 app.use(cors()); // Permitir conexiones desde el frontend
