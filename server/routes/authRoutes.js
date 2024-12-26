@@ -17,7 +17,7 @@ router.post('/register', async (req, res) => {
             return res.status(400).json({ message: 'El usuario ya existe' });
         }
         // Hashear la contraseña
-        const salt = await bcrypt.genSalt(10); 0
+        const salt = await bcrypt.genSalt(10); 
         const hashedPassword = await bcrypt.hash(password, salt);
 
         // Crear un nuevo usuario
@@ -37,7 +37,7 @@ router.post('/register', async (req, res) => {
 
         res.status(201).json({ message: 'Usuario creado' });
     } catch (error) {
-        console.error('Error en /register:', err);
+        console.error('Error en /register:', error);
         res.status(500).json({ message: 'Error al registrar el usuario' });
     }
 });
