@@ -4,9 +4,12 @@ import axios from 'axios';
 import TaskManager from './taskManager';
 import { Container, Row, Col, Button } from 'react-bootstrap';
 
+
+
 function Home() {
     const [name, setName] = useState('');
     const navigate = useNavigate();
+    const API_URL = process.env.REACT_APP_API_URL;
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -17,7 +20,7 @@ function Home() {
                     return;
                 }
 
-                const userResponse = await axios.get('http://localhost:5000/api/user', {
+                const userResponse = await axios.get(`${API_URL}/api/auth/login`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 setName(userResponse.data.name);
