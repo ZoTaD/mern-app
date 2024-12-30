@@ -21,13 +21,15 @@ if (!MONGO_URI) {
 
 
 const app = express();
-app.use(cors()); // Permitir conexiones desde el frontend
+// app.use(cors()); 
 app.use(express.json()); // Parsear JSON en las peticiones
 
 app.use(cors({
-    origin: 'https://blomernapp.netlify.app/', 
+    origin: 'https://blomernapp.netlify.app', 
     credentials: true,
 }));
+app.options('*', cors());
+
 
 // Conexión a MongoDB
 mongoose.connect(MONGO_URI, {
