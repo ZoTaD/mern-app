@@ -24,6 +24,11 @@ const app = express();
 app.use(cors()); // Permitir conexiones desde el frontend
 app.use(express.json()); // Parsear JSON en las peticiones
 
+app.use(cors({
+    origin: 'https://blomernapp.netlify.app/', 
+    credentials: true,
+}));
+
 // Conexión a MongoDB
 mongoose.connect(MONGO_URI, {
     useNewUrlParser: true,
