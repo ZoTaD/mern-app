@@ -1,10 +1,11 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
+const API_URL = process.env.REACT_APP_API_URL;
 // Acción para iniciar sesión
 export const login = createAsyncThunk('auth/login', async (credentials, { rejectWithValue }) => {
     try {
-        const response = await axios.post('http://localhost:5000/api/auth/login', credentials);
+        const response = await axios.post(`${API_URL}/api/auth/login`, credentials);
         return response.data; // { token: '...', user: { ... } }
     } catch (error) {
         return rejectWithValue(error.response?.data || 'Error al iniciar sesión');
@@ -15,7 +16,7 @@ export const login = createAsyncThunk('auth/login', async (credentials, { reject
 export const register = createAsyncThunk('auth/register', async (userData, { rejectWithValue }) => {
     try {
         //Hago la solicitud al backend con axios
-        const response = await axios.post('http://localhost:5000/api/auth/register', userData);
+        const response = await axios.post(`${API_URL}/api/auth/register`, userData);
         return response.data; // Mensaje de éxito
     } catch (error) {
         return rejectWithValue(error.response?.data || 'Error al registrar usuario');
