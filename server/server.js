@@ -15,8 +15,8 @@ console.log('Mongo URI:', process.env.MONGO_URI);
 
 const MONGO_URI = process.env.MONGO_URI;
 if (!MONGO_URI) {
-  console.error("Error: MongoDB URI no está definido en las variables de entorno.");
-  process.exit(1);
+    console.error("Error: MongoDB URI no está definido en las variables de entorno.");
+    process.exit(1);
 }
 
 
@@ -25,7 +25,9 @@ const app = express();
 app.use(express.json()); // Parsear JSON en las peticiones
 
 app.use(cors({
-    origin: ['https://blomernapp.netlify.app', 'https://blomernapp.netlify.app/'], 
+    origin: ['https://blomernapp.netlify.app'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
 }));
 app.options('*', cors());
