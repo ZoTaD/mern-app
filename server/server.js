@@ -26,20 +26,13 @@ app.use(express.json());
 console.log("hola");
 // Configuración de CORS
 app.use(cors({
-    origin: 'https://blomernapp.netlify.app', // URL exacta de tu frontend
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Métodos permitidos
-    allowedHeaders: ['Content-Type', 'Authorization'], // Encabezados permitidos
-    credentials: true, // Permitir cookies o encabezados de autorización
-    optionsSuccessStatus: 200
+    origin: 'https://blomernapp.netlify.app/',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,
 }));
-
-app.use((req, res, next) => {
-    console.log('CORS Middleware ejecutado para:', req.method, req.url);
-    next();
-});
-
-// Manejo de solicitudes preflight (OPTIONS) antes del registro de rutas
 app.options('*', cors());
+
 
 // Conexión a MongoDB
 mongoose.connect(MONGO_URI, {
