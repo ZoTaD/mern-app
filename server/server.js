@@ -26,7 +26,7 @@ app.use(express.json());
 
 // Configuración de CORS
 app.use(cors({
-    origin: ['https://blomernapp.netlify.app'], // Reemplaza con la URL correcta de tu frontend
+    origin: '*', // Reemplaza con la URL correcta de tu frontend
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
