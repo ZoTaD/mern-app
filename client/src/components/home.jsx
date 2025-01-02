@@ -16,16 +16,18 @@ function Home() {
             try {
                 const token = localStorage.getItem('token');
                 if (!token) {
-                    navigate('/');
+                    navigate('/'); // Redirigir al login si no hay token
                     return;
                 }
 
-                const userResponse = await axios.get(`${API_URL}/api/auth/login`, {
+                const userResponse = await axios.get(`${API_URL}/api/user`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
-                setName(userResponse.data.name);
+
+                setName(userResponse.data.name); // Configura el nombre del usuario
             } catch (error) {
-                navigate('/');
+                console.error('Error al obtener datos del usuario:', error);
+                navigate('/'); // Redirigir al login si hay un error
             }
         };
 
