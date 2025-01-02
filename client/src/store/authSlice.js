@@ -6,13 +6,19 @@ const API_URL = process.env.REACT_APP_API_URL;
 // Acción para iniciar sesión
 export const login = createAsyncThunk('auth/login', async (credentials, { rejectWithValue }) => {
     try {
+        console.log('Login iniciado con credentials:', credentials); // Log para ver los datos enviados
+        console.log('URL de la API:', `${API_URL}/api/auth/login`); // Log para verificar la URL
+
         const response = await axios.post(
             `${API_URL}/api/auth/login`,
             credentials,
             { headers: { 'Content-Type': 'application/json' } }
         );
+
+        console.log('Respuesta exitosa del servidor:', response.data); // Log para ver la respuesta
         return response.data; // { token: '...', user: { ... } }
     } catch (error) {
+        console.error('Error en el login:', error.response || error.message); // Log del error recibido
         const errorMessage = error.response?.data || 'Error al iniciar sesión';
         return rejectWithValue(errorMessage);
     }
