@@ -23,7 +23,7 @@ const app = express();
 
 // Middleware para parsear JSON
 app.use(express.json());
-
+console.log("hola");
 // Configuración de CORS
 app.use(cors({
     origin: 'https://blomernapp.netlify.app', // URL exacta de tu frontend
