@@ -26,11 +26,17 @@ app.use(express.json());
 
 // Configuración de CORS
 app.use(cors({
-    origin: '*', // Reemplaza con la URL correcta de tu frontend
+    origin: ['https://blomernapp.netlify.app'], // Reemplaza con la URL correcta de tu frontend
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true,
+    // credentials: true,
 }));
+
+app.use((req, res, next) => {
+    console.log(`${req.method} ${req.path}`);
+    console.log('Headers:', req.headers);
+    next();
+});
 
 // Manejo de solicitudes preflight (OPTIONS) antes del registro de rutas
 app.options('*', cors());
