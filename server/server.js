@@ -30,6 +30,7 @@ app.use(cors({
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Métodos permitidos
     allowedHeaders: ['Content-Type', 'Authorization'], // Encabezados permitidos
     credentials: true, // Permitir cookies o encabezados de autorización
+    optionsSuccessStatus: 200
 }));
 
 app.use((req, res, next) => {
