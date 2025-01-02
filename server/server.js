@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes.js';
 import taskRoutes from './routes/taskRoutes.js';
 import userRoutes from './routes/userRoutes.js';
+import axios from 'axios';
 
 // Cargar variables de entorno
 if (process.env.NODE_ENV !== 'production') {
