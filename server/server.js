@@ -64,6 +64,7 @@ mongoose.connect(MONGO_URI, {
     .catch((err) => console.error('Could not connect to MongoDB', err));
 
 // Registro de rutas
+
 app.use('/api/auth', authRoutes);
 app.use('/api/tasks', taskRoutes);
 app.use('/api/user', userRoutes);
