@@ -30,7 +30,7 @@ function Home() {
         };
 
         fetchUserData();
-    }, [navigate]);
+    }, [navigate, API_URL]);
 
     const handleLogout = () => {
         localStorage.removeItem('token');
