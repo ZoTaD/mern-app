@@ -26,13 +26,28 @@ app.use(express.json());
 console.log("hola");
 // Configuración de CORS
 app.use(cors({
-    origin: 'https://6776eb2b9d3a5ba6b0174aea--blomernapp.netlify.app',
+    origin: 'https://blomernapp.netlify.app',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     // credentials: true,
 }));
 app.options('*', cors());
 
+axios.interceptors.request.use((request) => {
+    console.log("Solicitud:", request);
+    return request;
+});
+
+axios.interceptors.response.use(
+    (response) => {
+        console.log("Respuesta:", response);
+        return response;
+    },
+    (error) => {
+        console.error("Error en respuesta:", error.response || error.message);
+        return Promise.reject(error);
+    }
+);
 
 // Conexión a MongoDB
 mongoose.connect(MONGO_URI, {
