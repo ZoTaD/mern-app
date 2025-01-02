@@ -25,7 +25,7 @@ const app = express();
 app.use(express.json()); // Parsear JSON en las peticiones
 
 app.use(cors({
-    origin: 'https://blomernapp.netlify.app', 
+    origin: ['https://blomernapp.netlify.app', 'https://blomernapp.netlify.app/'], 
     credentials: true,
 }));
 app.options('*', cors());
