@@ -13,9 +13,13 @@ function Login({ onSwitchToRegister }) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        console.log('Datos enviados:', { email, password });
         dispatch(login({ email, password })).then((result) => {
+            console.log('Resultado del login:', result);
             if (result.meta.requestStatus === 'fulfilled') {
                 navigate('/home'); // Redirigir si el login es exitoso
+            } else {
+                console.error('Error en login:', result.payload);
             }
         });
     };

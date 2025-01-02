@@ -3,6 +3,14 @@ import axios from 'axios';
 
 const API_URL = process.env.REACT_APP_API_URL;
 
+axios.interceptors.request.use((config) => {
+    console.log('Solicitud Axios:', config);
+    return config;
+}, (error) => {
+    console.error('Error en la solicitud Axios:', error);
+    return Promise.reject(error);
+});
+
 // Acción para iniciar sesión
 export const login = createAsyncThunk('auth/login', async (credentials, { rejectWithValue }) => {
     try {
