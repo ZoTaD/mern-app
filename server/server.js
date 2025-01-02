@@ -26,10 +26,10 @@ app.use(express.json());
 console.log("hola");
 // Configuración de CORS
 app.use(cors({
-    origin: 'https://blomernapp.netlify.app/',
+    origin: 'https://6776eb2b9d3a5ba6b0174aea--blomernapp.netlify.app',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true,
+    // credentials: true,
 }));
 app.options('*', cors());
 
