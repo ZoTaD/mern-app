@@ -21,6 +21,11 @@ if (!MONGO_URI) {
 
 const app = express();
 
+app.use((req, res, next) => {
+    console.log(`Solicitud recibida de origen: ${req.headers.origin}`);
+    next();
+});
+
 // Middleware para parsear JSON
 app.use(express.json());
 console.log("hola");
@@ -29,7 +34,7 @@ app.use(cors({
     origin: 'https://blomernapp.netlify.app',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
-    // credentials: true,
+    credentials: true,
 }));
 app.options('*', cors());
 
