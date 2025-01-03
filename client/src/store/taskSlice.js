@@ -1,16 +1,20 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
+const API_URL = process.env.REACT_APP_API_URL;
+
 // Obtener tareas del servidor
 export const fetchTasks = createAsyncThunk('tasks/fetchTasks', async (_, { rejectWithValue }) => {
     try {
         const token = localStorage.getItem('token');
-        const response = await axios.get('http://localhost:5000/api/tasks', {
+        if (!token) throw new Error('Token no disponible');
+        const response = await axios.get(`${API_URL}/api/tasks`, {
             headers: { Authorization: `Bearer ${token}` },
         });
         return response.data;
     } catch (error) {
-        return rejectWithValue(error.response.data.message);
+        const errorMessage = error.response?.data?.message || 'Error al obtener las tareas';
+        return rejectWithValue(errorMessage);
     }
 });
 
@@ -18,12 +22,14 @@ export const fetchTasks = createAsyncThunk('tasks/fetchTasks', async (_, { rejec
 export const createTask = createAsyncThunk('tasks/createTask', async (task, { rejectWithValue }) => {
     try {
         const token = localStorage.getItem('token');
-        const response = await axios.post('http://localhost:5000/api/tasks', task, {
+        if (!token) throw new Error('Token no disponible');
+        const response = await axios.post(`${API_URL}/api/tasks`, task, {
             headers: { Authorization: `Bearer ${token}` },
         });
         return response.data;
     } catch (error) {
-        return rejectWithValue(error.response.data.message);
+        const errorMessage = error.response?.data?.message || 'Error al crear la tarea';
+        return rejectWithValue(errorMessage);
     }
 });
 
@@ -33,12 +39,14 @@ export const updateTask = createAsyncThunk(
     async ({ id, data }, { rejectWithValue }) => {
         try {
             const token = localStorage.getItem('token');
-            const response = await axios.put(`http://localhost:5000/api/tasks/${id}`, data, {
+            if (!token) throw new Error('Token no disponible');
+            const response = await axios.put(`${API_URL}/api/tasks/${id}`, data, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             return response.data;
         } catch (error) {
-            return rejectWithValue(error.response.data.message);
+            const errorMessage = error.response?.data?.message || 'Error al actualizar la tarea';
+            return rejectWithValue(errorMessage);
         }
     }
 );
@@ -47,17 +55,19 @@ export const updateTask = createAsyncThunk(
 export const deleteTask = createAsyncThunk('tasks/deleteTask', async (id, { rejectWithValue }) => {
     try {
         const token = localStorage.getItem('token');
-        await axios.delete(`http://localhost:5000/api/tasks/${id}`, {
+        if (!token) throw new Error('Token no disponible');
+        await axios.delete(`${API_URL}/api/tasks/${id}`, {
             headers: { Authorization: `Bearer ${token}` },
         });
         return id;
     } catch (error) {
-        return rejectWithValue(error.response.data.message);
+        const errorMessage = error.response?.data?.message || 'Error al eliminar la tarea';
+        return rejectWithValue(errorMessage);
     }
 });
 
+// Configuración del slice
 const taskSlice = createSlice({
-    // El builder se usa para definir acciones específicas que afectan el estado global dependiendo de los estados de la petición: pending, fulfilled o rejected.
     name: 'tasks',
     initialState: { tasks: [], loading: false, error: null },
     reducers: {},
@@ -65,6 +75,7 @@ const taskSlice = createSlice({
         builder
             .addCase(fetchTasks.pending, (state) => {
                 state.loading = true;
+                state.error = null;
             })
             .addCase(fetchTasks.fulfilled, (state, action) => {
                 state.loading = false;
