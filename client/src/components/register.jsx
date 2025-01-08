@@ -9,43 +9,32 @@ function Register({ onSwitchToLogin }) {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [emailError, setEmailError] = useState(''); // Nueva variable para errores de email
     const dispatch = useDispatch();
-    const [generalError, setGeneralError] = useState('');
     const { loading, error } = useSelector((state) => state.auth);
     const navigate = useNavigate();
 
-    const API_URL = process.env.REACT_APP_API_URL;
-
-    // Función para verificar si el email o usuario ya existen
-    const checkEmailOrUsernameExists = async (email, username) => {
+    const validateEmail = async (email) => {
         try {
-            const response = await axios.post(`${API_URL}/api/auth/check-user`, { email, username });
+            const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/auth/check-user`, { email });
             if (response.data.emailExists) {
                 setEmailError('El email ya está registrado.');
             } else {
                 setEmailError('');
             }
-            if (response.data.usernameExists) {
-                setGeneralError('El nombre de usuario ya está registrado.');
-            } else {
-                setGeneralError('');
-            }
-        } catch (err) {
-            console.error('Error al verificar el email o usuario:', err);
-            setGeneralError('No se pudo verificar la disponibilidad.');
+        } catch (error) {
+            console.error('Error al validar el email:', error);
         }
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-
-        if (emailError || generalError) {
-            alert('Por favor, corrige los errores antes de continuar.');
+        if (emailError) {
+            console.error('No se puede registrar con un email inválido');
             return;
         }
-
         dispatch(register({ username, email, password })).then((result) => {
-            console.log('Resultado del registro:', result); // Log del registro
+            console.log('Resultado del registro:', result); // Agrega este log
             if (result.meta.requestStatus === 'fulfilled') {
                 console.log('Registro exitoso, redirigiendo al login.');
                 navigate('/', { state: { successMessage: 'Registro exitoso. Por favor, inicia sesión.' } });
@@ -58,21 +47,12 @@ function Register({ onSwitchToLogin }) {
     const handleEmailChange = (e) => {
         const value = e.target.value;
         setEmail(value);
-        if (value.includes('@') && value.includes('.')) {
-            checkEmailOrUsernameExists(value, username);
+        if (value) {
+            validateEmail(value); // Validar email en tiempo real
         } else {
-            setEmailError('El formato del email no es válido.');
+            setEmailError('');
         }
     };
-
-    const handleUsernameChange = (e) => {
-        const value = e.target.value;
-        setUsername(value);
-        if (email.includes('@') && email.includes('.')) {
-            checkEmailOrUsernameExists(email, value);
-        }
-    };
-
 
     return (
         <div className="fullscreen-container">
@@ -82,7 +62,7 @@ function Register({ onSwitchToLogin }) {
                         <Card className="p-4 shadow">
                             <Card.Body>
                                 <Card.Title className="text-center mb-4">Registrarse</Card.Title>
-                                {generalError && <p className="text-danger">{generalError}</p>}
+                                {error && <p className="text-danger">{error}</p>}
                                 <Form onSubmit={handleSubmit}>
                                     <Form.Group controlId="username" className="mb-3">
                                         <Form.Label>Usuario</Form.Label>
@@ -90,7 +70,7 @@ function Register({ onSwitchToLogin }) {
                                             type="text"
                                             placeholder="Ingresa tu usuario"
                                             value={username}
-                                            onChange={handleUsernameChange}
+                                            onChange={(e) => setUsername(e.target.value)}
                                         />
                                     </Form.Group>
                                     <Form.Group controlId="email" className="mb-3">
@@ -101,7 +81,7 @@ function Register({ onSwitchToLogin }) {
                                             value={email}
                                             onChange={handleEmailChange}
                                         />
-                                        {emailError && <p className="text-danger">{emailError}</p>}
+                                        {emailError && <p className="text-danger">{emailError}</p>} {/* Mostrar error */}
                                     </Form.Group>
                                     <Form.Group controlId="password" className="mb-3">
                                         <Form.Label>Contraseña</Form.Label>
@@ -116,7 +96,7 @@ function Register({ onSwitchToLogin }) {
                                         variant="primary"
                                         type="submit"
                                         className="w-100"
-                                        disabled={loading}
+                                        disabled={loading || emailError !== ''}
                                     >
                                         {loading ? 'Cargando...' : 'Registrarse'}
                                     </Button>

@@ -1,122 +1,83 @@
-import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { register } from '../store/authSlice';
-import { useNavigate } from 'react-router-dom';
-import { Form, Button, Card, Container, Row, Col } from 'react-bootstrap';
-import axios from 'axios';
+import express from 'express';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import User from '../models/User.js';
 
-function Register({ onSwitchToLogin }) {
-    const [emailError, setEmailError] = useState('');
-    const [username, setUsername] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const dispatch = useDispatch();
-    const { loading, error } = useSelector((state) => state.auth);
-    const navigate = useNavigate();
+const router = express.Router();
 
-    const validateEmail = async (email) => {
-        try {
-            const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/auth/check-user`, { email });
-            if (response.data.emailExists) {
-                setEmailError('El email ya está registrado.');
-            } else {
-                setEmailError('');
-            }
-        } catch (error) {
-            console.error('Error al validar el email:', error);
+// Creacion de endpoints
+// Registro de usuario
+router.post('/register', async (req, res) => {
+    const { username, email, password } = req.body;
+
+    // Verificar si el usuario ya existe
+    try {
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(400).json({ message: 'El usuario ya existe' });
         }
-    };
+        // Hashear la contraseña
+        const salt = await bcrypt.genSalt(10); 
+        const hashedPassword = await bcrypt.hash(password, salt);
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        if (emailError) {
-            console.error('No se puede registrar con un email inválido');
-            return;
-        }
-        dispatch(register({ username, email, password })).then((result) => {
-            console.log('Resultado del registro:', result); // Agrega este log
-            if (result.meta.requestStatus === 'fulfilled') {
-                console.log('Registro exitoso, redirigiendo al login.');
-                navigate('/', { state: { successMessage: 'Registro exitoso. Por favor, inicia sesión.' } });
-            } else {
-                console.error('Error en el registro:', result.payload || 'Error desconocido');
-            }
+        // Crear un nuevo usuario
+        const newUser = new User({
+            username,
+            email,
+            password: hashedPassword,
         });
-    };
 
-    const handleEmailChange = (e) => {
-        const value = e.target.value;
-        setEmail(value);
-        if (value) {
-            validateEmail(value); // Validar email en tiempo real
-        } else {
-            setEmailError('');
+        // Guardo el usuario en la base de datos
+        await newUser.save();
+
+        // Genero el token
+        const token = jwt.sign({ id: newUser._id, username: newUser.username }, process.env.JWT_SECRET, {
+            expiresIn: '2h',
+        });
+
+        res.status(201).json({ message: 'Usuario creado' });
+    } catch (error) {
+        console.error('Error en /register:', error);
+        res.status(500).json({ message: 'Error al registrar el usuario' });
+    }
+});
+
+// login de Usuario
+router.post('/login', async (req, res) => {
+    const { email, password } = req.body;
+    console.log('Datos recibidos para login:', { email, password }); // Log para debug
+
+    try {
+        const user = await User.findOne({ email });
+        console.log('Usuario encontrado:', user); // Log para verificar el usuario
+
+        if (!user) {
+            console.warn('Usuario no encontrado.');
+            return res.status(400).json({ message: 'Credenciales incorrectas' });
         }
-    };
 
-    return (
-        <div className="fullscreen-container">
-            <Container>
-                <Row className="justify-content-center">
-                    <Col xs={12} md={6} lg={4}>
-                        <Card className="p-4 shadow">
-                            <Card.Body>
-                                <Card.Title className="text-center mb-4">Registrarse</Card.Title>
-                                {error && <p className="text-danger">{error}</p>}
-                                <Form onSubmit={handleSubmit}>
-                                    <Form.Group controlId="username" className="mb-3">
-                                        <Form.Label>Usuario</Form.Label>
-                                        <Form.Control
-                                            type="text"
-                                            placeholder="Ingresa tu usuario"
-                                            value={username}
-                                            onChange={(e) => setUsername(e.target.value)}
-                                        />
-                                    </Form.Group>
-                                    <Form.Group controlId="email" className="mb-3">
-                                        <Form.Label>Email</Form.Label>
-                                        <Form.Control
-                                            type="email"
-                                            placeholder="Ingresa tu email"
-                                            value={email}
-                                            onChange={handleEmailChange}
-                                        />
-                                        {emailError && <p className="text-danger">{emailError}</p>} {/* Mostrar error */}
-                                    </Form.Group>
-                                    <Form.Group controlId="password" className="mb-3">
-                                        <Form.Label>Contraseña</Form.Label>
-                                        <Form.Control
-                                            type="password"
-                                            placeholder="Ingresa tu contraseña"
-                                            value={password}
-                                            onChange={(e) => setPassword(e.target.value)}
-                                        />
-                                    </Form.Group>
-                                    <Button
-                                        variant="primary"
-                                        type="submit"
-                                        className="w-100"
-                                        disabled={loading || emailError !== ''}
-                                    >
-                                        {loading ? 'Cargando...' : 'Registrarse'}
-                                    </Button>
-                                </Form>
-                                <div className="text-center mt-3">
-                                    <Button
-                                        variant="link"
-                                        onClick={() => navigate('/')}
-                                        className="text-decoration-none"
-                                    >
-                                        ← Volver al Login
-                                    </Button>
-                                </div>
-                            </Card.Body>
-                        </Card>
-                    </Col>
-                </Row>
-            </Container>
-        </div>
-    );
-}
+        const isMatch = await bcrypt.compare(password, user.password);
+        console.log('Contraseña correcta:', isMatch); // Log para la contraseña
 
-export default Register;
+        if (!isMatch) {
+            console.warn('Contraseña incorrecta.');
+            return res.status(400).json({ message: 'Credenciales incorrectas' });
+        }
+
+        const token = jwt.sign({ id: user._id, username: user.username }, process.env.JWT_SECRET, {
+            expiresIn: '2h',
+        });
+        console.log('Token generado:', token); // Log para el token
+
+        res.status(200).json({ token });
+    } catch (error) {
+        console.error('Error en /login:', error);
+        res.status(500).json({ message: 'Error al iniciar sesión' });
+    }
+});
+
+
+
+
+
+export default router;
