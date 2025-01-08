@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../store/authSlice';
 import { useNavigate } from 'react-router-dom';
 import { Form, Button, Card, Container, Row, Col } from 'react-bootstrap';
+import { useLocation } from 'react-router-dom';
 
 function Login({ onSwitchToRegister }) {
     const [email, setEmail] = useState('');
@@ -10,6 +11,8 @@ function Login({ onSwitchToRegister }) {
     const dispatch = useDispatch();
     const { loading, error } = useSelector((state) => state.auth);
     const navigate = useNavigate();
+    const location = useLocation();
+    const message = location.state?.message;
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -90,6 +93,7 @@ function Login({ onSwitchToRegister }) {
                                         Registrarse
                                     </Button>
                                 </div>
+                                {message && <p className="text-success">{message}</p>}
                             </Card.Body>
                         </Card>
                     </Col>

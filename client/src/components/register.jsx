@@ -8,12 +8,18 @@ function Register({ onSwitchToLogin }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const dispatch = useDispatch();
-    const { loading, error } = useSelector((state) => state.auth);
+    const { loading, error, success } = useSelector((state) => state.auth);
 
     const handleSubmit = (e) => {
         e.preventDefault();
         dispatch(register({ username, email, password }));
     };
+
+    useEffect(() => {
+        if (success) {
+            navigate('/login', { state: { message: 'Registro exitoso. Por favor, inicia sesión.' } });
+        }
+    }, [success, navigate]);
 
     return (
         <div className="fullscreen-container">
