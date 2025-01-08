@@ -3,29 +3,35 @@ import { useDispatch, useSelector } from 'react-redux';
 import { register } from '../store/authSlice';
 import { useNavigate } from 'react-router-dom';
 import { Form, Button, Card, Container, Row, Col } from 'react-bootstrap';
-import axios from 'axios';
 
 function Register({ onSwitchToLogin }) {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [emailError, setEmailError] = useState('');
-    const [registerError, setRegisterError] = useState(''); // Nuevo estado para manejar errores de registro
+    const [registerError, setRegisterError] = useState(''); // Manejo de errores de registro
     const dispatch = useDispatch();
     const { loading } = useSelector((state) => state.auth);
     const navigate = useNavigate();
 
-    const validateEmail = async (email) => {
-        try {
-            const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/auth/check-user`, { email });
-            if (response.data.emailExists) {
-                setEmailError('El email ya está registrado.');
-            } else {
-                setEmailError('');
-            }
-        } catch (error) {
-            console.error('Error al validar el email:', error);
+    // Función para validar si el email tiene un formato válido
+    const validateEmailFormat = (email) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Regex para validar formato de email
+        return emailRegex.test(email);
+    };
+
+    // Función para manejar cambios en el campo de email
+    const handleEmailChange = (e) => {
+        const value = e.target.value;
+        setEmail(value);
+
+        // Validar formato del email
+        if (!validateEmailFormat(value)) {
+            setEmailError('Por favor, ingresa un email válido.');
+            return;
         }
+
+        setEmailError(''); // Limpiar errores si el formato es válido
     };
 
     const handleSubmit = async (e) => {
@@ -34,8 +40,9 @@ function Register({ onSwitchToLogin }) {
             console.error('No se puede registrar con un email inválido');
             return;
         }
+
         dispatch(register({ username, email, password }))
-            .unwrap() // Permite capturar errores directamente
+            .unwrap()
             .then(() => {
                 console.log('Registro exitoso, redirigiendo al login.');
                 navigate('/', { state: { successMessage: 'Registro exitoso. Por favor, inicia sesión.' } });
@@ -46,16 +53,6 @@ function Register({ onSwitchToLogin }) {
             });
     };
 
-    const handleEmailChange = (e) => {
-        const value = e.target.value;
-        setEmail(value);
-        if (value) {
-            validateEmail(value);
-        } else {
-            setEmailError('');
-        }
-    };
-
     return (
         <div className="fullscreen-container">
             <Container>
@@ -64,7 +61,6 @@ function Register({ onSwitchToLogin }) {
                         <Card className="p-4 shadow">
                             <Card.Body>
                                 <Card.Title className="text-center mb-4">Registrarse</Card.Title>
-                                {/* Mostrar error de registro */}
                                 {registerError && <p className="text-danger">{registerError}</p>}
                                 <Form onSubmit={handleSubmit}>
                                     <Form.Group controlId="username" className="mb-3">
