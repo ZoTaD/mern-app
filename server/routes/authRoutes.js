@@ -6,10 +6,10 @@ import { Form, Button, Card, Container, Row, Col } from 'react-bootstrap';
 import axios from 'axios';
 
 function Register({ onSwitchToLogin }) {
+    const [emailError, setEmailError] = useState('');
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [emailError, setEmailError] = useState(''); // Nueva variable para errores de email
     const dispatch = useDispatch();
     const { loading, error } = useSelector((state) => state.auth);
     const navigate = useNavigate();
