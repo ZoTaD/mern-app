@@ -51,6 +51,7 @@ function Login({ onSwitchToRegister }) {
                         <Card className="p-4 shadow">
                             <Card.Body>
                                 <Card.Title className="text-center mb-4">Iniciar sesión</Card.Title>
+                                {/* Mostrar mensaje de éxito solo si fue pasado por el state */}
                                 {successMessage && <p className="text-success">{successMessage}</p>}
                                 {error && <p className="text-danger">{error}</p>}
                                 <Form onSubmit={handleSubmit}>
@@ -84,7 +85,7 @@ function Login({ onSwitchToRegister }) {
                                 <div className="text-center mt-3">
                                     <Button
                                         variant="link"
-                                        onClick={() => navigate('/register')}
+                                        onClick={onSwitchToRegister}
                                         className="text-decoration-none"
                                     >
                                         Registrarse
