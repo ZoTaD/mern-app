@@ -11,8 +11,7 @@ function Login({ onSwitchToRegister }) {
     const dispatch = useDispatch();
     const { loading, error } = useSelector((state) => state.auth);
     const navigate = useNavigate();
-    const location = useLocation();
-    const message = location.state?.message;
+    
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -93,7 +92,6 @@ function Login({ onSwitchToRegister }) {
                                         Registrarse
                                     </Button>
                                 </div>
-                                {message && <p className="text-success">{message}</p>}
                             </Card.Body>
                         </Card>
                     </Col>

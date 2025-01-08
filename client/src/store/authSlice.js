@@ -3,23 +3,32 @@ import axios from 'axios';
 
 const API_URL = process.env.REACT_APP_API_URL;
 
-// Interceptor de solicitudes para capturar errores globales (opcional)
-axios.interceptors.request.use(
-    (config) => config,
-    (error) => Promise.reject(error)
-);
+axios.interceptors.request.use((config) => {
+    console.log('Solicitud Axios:', config);
+    return config;
+}, (error) => {
+    console.error('Error en la solicitud Axios:', error);
+    return Promise.reject(error);
+});
 
 // Acción para iniciar sesión
 export const login = createAsyncThunk('auth/login', async (credentials, { rejectWithValue }) => {
     try {
+        console.log('Login iniciado con credentials:', credentials); // Log para ver los datos enviados
+        console.log('URL de la API:', `${API_URL}/api/auth/login`); // Log para verificar la URL
+
         const response = await axios.post(
             `${API_URL}/api/auth/login`,
             credentials,
             { headers: { 'Content-Type': 'application/json' } }
         );
-        return response.data; // Devuelve { token: '...', user: { ... } }
+
+        console.log('Respuesta exitosa del servidor:', response.data); // Log para ver la respuesta
+        return response.data; // { token: '...', user: { ... } }
     } catch (error) {
-        return rejectWithValue(error.response?.data || 'Error al iniciar sesión');
+        console.error('Error en el login:', error.response || error.message); // Log del error recibido
+        const errorMessage = error.response?.data || 'Error al iniciar sesión';
+        return rejectWithValue(errorMessage);
     }
 });
 
@@ -31,9 +40,10 @@ export const register = createAsyncThunk('auth/register', async (userData, { rej
             userData,
             { headers: { 'Content-Type': 'application/json' } }
         );
-        return response.data; // Devuelve mensaje de éxito
+        return response.data; // Mensaje de éxito
     } catch (error) {
-        return rejectWithValue(error.response?.data || 'Error al registrar usuario');
+        const errorMessage = error.response?.data || 'Error al registrar usuario';
+        return rejectWithValue(errorMessage);
     }
 });
 
@@ -45,22 +55,16 @@ const authSlice = createSlice({
         token: null,
         loading: false,
         error: null,
-        success: false, // Indica si el registro fue exitoso
     },
     reducers: {
         logout: (state) => {
             state.user = null;
             state.token = null;
-            localStorage.removeItem('token'); // Limpia el token del almacenamiento local
-        },
-        resetState: (state) => {
-            state.success = false;
-            state.error = null;
+            localStorage.removeItem('token'); // Eliminar token
         },
     },
     extraReducers: (builder) => {
         builder
-            // Login
             .addCase(login.pending, (state) => {
                 state.loading = true;
                 state.error = null;
@@ -69,30 +73,26 @@ const authSlice = createSlice({
                 state.loading = false;
                 state.token = action.payload.token;
                 state.user = action.payload.user;
-                localStorage.setItem('token', action.payload.token); // Guarda el token en localStorage
+                localStorage.setItem('token', action.payload.token); // Guardar token
+                console.log('Token guardado en localStorage:', action.payload.token);
             })
             .addCase(login.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
             })
-
-            // Register
             .addCase(register.pending, (state) => {
                 state.loading = true;
                 state.error = null;
-                state.success = false;
             })
             .addCase(register.fulfilled, (state) => {
                 state.loading = false;
-                state.success = true; // Marca el registro como exitoso
             })
             .addCase(register.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
-                state.success = false; // Asegura que success sea falso si hay un error
             });
     },
 });
 
-export const { logout, resetState } = authSlice.actions;
+export const { logout } = authSlice.actions;
 export default authSlice.reducer;

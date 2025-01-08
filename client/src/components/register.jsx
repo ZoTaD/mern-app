@@ -1,30 +1,19 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { register, resetState } from '../store/authSlice';
+import { register } from '../store/authSlice';
 import { Form, Button, Card, Container, Row, Col } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
 
 function Register({ onSwitchToLogin }) {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const dispatch = useDispatch();
-    const navigate = useNavigate();
-    const { loading, error, success } = useSelector((state) => state.auth);
+    const { loading, error } = useSelector((state) => state.auth);
 
     const handleSubmit = (e) => {
         e.preventDefault();
         dispatch(register({ username, email, password }));
     };
-
-    useEffect(() => {
-        if (success) {
-            // Redirige al login con un mensaje de éxito
-            navigate('/login', { state: { message: 'Registro exitoso. Por favor, inicia sesión.' } });
-            // Resetea el estado success después de redirigir
-            dispatch(resetState());
-        }
-    }, [success, navigate, dispatch]);
 
     return (
         <div className="fullscreen-container">
