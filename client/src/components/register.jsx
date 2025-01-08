@@ -9,9 +9,10 @@ function Register({ onSwitchToLogin }) {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [emailError, setEmailError] = useState(''); // Nueva variable para errores de email
+    const [emailError, setEmailError] = useState('');
+    const [registerError, setRegisterError] = useState(''); // Nuevo estado para manejar errores de registro
     const dispatch = useDispatch();
-    const { loading, error } = useSelector((state) => state.auth);
+    const { loading } = useSelector((state) => state.auth);
     const navigate = useNavigate();
 
     const validateEmail = async (email) => {
@@ -33,22 +34,23 @@ function Register({ onSwitchToLogin }) {
             console.error('No se puede registrar con un email inválido');
             return;
         }
-        dispatch(register({ username, email, password })).then((result) => {
-            console.log('Resultado del registro:', result); // Agrega este log
-            if (result.meta.requestStatus === 'fulfilled') {
+        dispatch(register({ username, email, password }))
+            .unwrap() // Permite capturar errores directamente
+            .then(() => {
                 console.log('Registro exitoso, redirigiendo al login.');
                 navigate('/', { state: { successMessage: 'Registro exitoso. Por favor, inicia sesión.' } });
-            } else {
-                console.error('Error en el registro:', result.payload || 'Error desconocido');
-            }
-        });
+            })
+            .catch((error) => {
+                console.error('Error en el registro:', error);
+                setRegisterError(error); // Establecer mensaje de error para mostrarlo
+            });
     };
 
     const handleEmailChange = (e) => {
         const value = e.target.value;
         setEmail(value);
         if (value) {
-            validateEmail(value); // Validar email en tiempo real
+            validateEmail(value);
         } else {
             setEmailError('');
         }
@@ -62,7 +64,8 @@ function Register({ onSwitchToLogin }) {
                         <Card className="p-4 shadow">
                             <Card.Body>
                                 <Card.Title className="text-center mb-4">Registrarse</Card.Title>
-                                {error && <p className="text-danger">{error}</p>}
+                                {/* Mostrar error de registro */}
+                                {registerError && <p className="text-danger">{registerError}</p>}
                                 <Form onSubmit={handleSubmit}>
                                     <Form.Group controlId="username" className="mb-3">
                                         <Form.Label>Usuario</Form.Label>
@@ -81,7 +84,7 @@ function Register({ onSwitchToLogin }) {
                                             value={email}
                                             onChange={handleEmailChange}
                                         />
-                                        {emailError && <p className="text-danger">{emailError}</p>} {/* Mostrar error */}
+                                        {emailError && <p className="text-danger">{emailError}</p>}
                                     </Form.Group>
                                     <Form.Group controlId="password" className="mb-3">
                                         <Form.Label>Contraseña</Form.Label>

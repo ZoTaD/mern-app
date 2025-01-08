@@ -44,8 +44,8 @@ export const register = createAsyncThunk('auth/register', async (userData, { rej
         );
         return response.data; // Mensaje de éxito
     } catch (error) {
-        const errorMessage = error.response?.data || 'Error al registrar usuario';
-        return rejectWithValue(errorMessage);
+        const errorMessage = error.response?.data?.message || 'Error al registrar usuario';
+        return rejectWithValue(errorMessage); // Retorna el mensaje de error al frontend
     }
 });
 

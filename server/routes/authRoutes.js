@@ -29,37 +29,23 @@ router.post('/register', async (req, res) => {
     const { username, email, password } = req.body;
 
     try {
-        // Verificar si el usuario ya existe
         const existingUser = await User.findOne({ email });
         if (existingUser) {
             return res.status(400).json({ message: 'El usuario ya existe' });
         }
-
-        // Hashear la contraseña
-        const salt = await bcrypt.genSalt(10); 
+        const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        // Crear un nuevo usuario
-        const newUser = new User({
-            username,
-            email,
-            password: hashedPassword,
-        });
-
-        // Guardar el usuario en la base de datos
+        const newUser = new User({ username, email, password: hashedPassword });
         await newUser.save();
-
-        // Generar el token
-        const token = jwt.sign({ id: newUser._id, username: newUser.username }, process.env.JWT_SECRET, {
-            expiresIn: '2h',
-        });
 
         res.status(201).json({ message: 'Usuario creado' });
     } catch (error) {
-        console.error('Error en /register:', error);
+        console.error('Error al registrar usuario:', error);
         res.status(500).json({ message: 'Error al registrar el usuario' });
     }
 });
+
 
 // Login de usuario
 router.post('/login', async (req, res) => {
