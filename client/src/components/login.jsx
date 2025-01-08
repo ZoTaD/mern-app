@@ -51,9 +51,13 @@ function Login({ onSwitchToRegister }) {
                         <Card className="p-4 shadow">
                             <Card.Body>
                                 <Card.Title className="text-center mb-4">Iniciar sesión</Card.Title>
-                                {/* Mostrar mensaje de éxito solo si fue pasado por el state */}
+
+                                {/* Mostrar mensaje de éxito solo si existe */}
                                 {successMessage && <p className="text-success">{successMessage}</p>}
-                                {error && <p className="text-danger">{error}</p>}
+
+                                {/* Mostrar mensaje de error solo si no hay mensaje de éxito */}
+                                {!successMessage && error && <p className="text-danger">{error}</p>}
+
                                 <Form onSubmit={handleSubmit}>
                                     <Form.Group controlId="email" className="mb-3">
                                         <Form.Label>Email</Form.Label>
@@ -85,7 +89,7 @@ function Login({ onSwitchToRegister }) {
                                 <div className="text-center mt-3">
                                     <Button
                                         variant="link"
-                                        onClick={onSwitchToRegister}
+                                        onClick={() => navigate('/register')}
                                         className="text-decoration-none"
                                     >
                                         Registrarse
