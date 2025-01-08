@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { register } from '../store/authSlice';
+import { useNavigate } from 'react-router-dom';
 import { Form, Button, Card, Container, Row, Col } from 'react-bootstrap';
 
 function Register({ onSwitchToLogin }) {
@@ -9,10 +10,15 @@ function Register({ onSwitchToLogin }) {
     const [password, setPassword] = useState('');
     const dispatch = useDispatch();
     const { loading, error } = useSelector((state) => state.auth);
+    const navigate = useNavigate();
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        dispatch(register({ username, email, password }));
+        dispatch(register({ username, email, password })).then((result) => {
+            if (result.meta.requestStatus === 'fulfilled') {
+                navigate('/login', { state: { successMessage: 'Registro exitoso. Por favor, inicia sesión.' } });
+            }
+        });
     };
 
     return (

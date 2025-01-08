@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../store/authSlice';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Form, Button, Card, Container, Row, Col } from 'react-bootstrap';
-import { useLocation } from 'react-router-dom';
 
 function Login({ onSwitchToRegister }) {
     const [email, setEmail] = useState('');
@@ -11,7 +10,8 @@ function Login({ onSwitchToRegister }) {
     const dispatch = useDispatch();
     const { loading, error } = useSelector((state) => state.auth);
     const navigate = useNavigate();
-    
+    const location = useLocation();
+    const successMessage = location.state?.successMessage;
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -54,6 +54,7 @@ function Login({ onSwitchToRegister }) {
                         <Card className="p-4 shadow">
                             <Card.Body>
                                 <Card.Title className="text-center mb-4">Iniciar sesión</Card.Title>
+                                {successMessage && <p className="text-success">{successMessage}</p>}
                                 {error && <p className="text-danger">{error}</p>}
                                 <Form onSubmit={handleSubmit}>
                                     <Form.Group controlId="email" className="mb-3">
