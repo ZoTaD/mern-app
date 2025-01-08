@@ -21,7 +21,7 @@ function Login({ onSwitchToRegister }) {
             .then((result) => {
                 if (result.meta.requestStatus === 'fulfilled') {
                     console.log('Resultado del login:', result);
-                    navigate('/home');
+                    navigate('/');
                 } else {
                     console.error('Error en login:', result.payload || 'Error desconocido');
                 }

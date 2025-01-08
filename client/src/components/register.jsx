@@ -16,7 +16,7 @@ function Register({ onSwitchToLogin }) {
         e.preventDefault();
         dispatch(register({ username, email, password })).then((result) => {
             if (result.meta.requestStatus === 'fulfilled') {
-                navigate('/login', { state: { successMessage: 'Registro exitoso. Por favor, inicia sesión.' } });
+                navigate('/', { state: { successMessage: 'Registro exitoso. Por favor, inicia sesión.' } });
             }
         });
     };
