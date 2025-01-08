@@ -11,18 +11,38 @@ function Login({ onSwitchToRegister }) {
     const { loading, error } = useSelector((state) => state.auth);
     const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         console.log('Datos enviados:', { email, password });
-        dispatch(login({ email, password })).then((result) => {
-            console.log('Resultado del login:', result);
-            if (result.meta.requestStatus === 'fulfilled') {
-                navigate('/home'); // Redirigir si el login es exitoso
-            } else {
-                console.error('Error en login:', result.payload);
-            }
-        });
+
+        dispatch(login({ email, password }))
+            .then((result) => {
+                if (result.meta.requestStatus === 'fulfilled') {
+                    console.log('Resultado del login:', result);
+                    navigate('/home');
+                } else {
+                    console.error('Error en login:', result.payload || 'Error desconocido');
+                }
+            })
+            .catch((err) => {
+                console.error('Error inesperado:', err);
+            });
     };
+
+    // Revisar codigo de los handleSubmits
+
+    // const handleSubmit = (e) => {
+    //     e.preventDefault();
+    //     console.log('Datos enviados:', { email, password });
+    //     dispatch(login({ email, password })).then((result) => {
+    //         console.log('Resultado del login:', result);
+    //         if (result.meta.requestStatus === 'fulfilled') {
+    //             navigate('/home'); 
+    //         } else {
+    //             console.error('Error en login:', result.payload);
+    //         }
+    //     });
+    // };
 
     return (
         <div className="fullscreen-container">
