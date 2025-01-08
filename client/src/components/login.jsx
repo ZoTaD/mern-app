@@ -28,21 +28,6 @@ function Login({ onSwitchToRegister }) {
 
     };
 
-    // Revisar codigo de los handleSubmits
-
-    // const handleSubmit = (e) => {
-    //     e.preventDefault();
-    //     console.log('Datos enviados:', { email, password });
-    //     dispatch(login({ email, password })).then((result) => {
-    //         console.log('Resultado del login:', result);
-    //         if (result.meta.requestStatus === 'fulfilled') {
-    //             navigate('/home'); 
-    //         } else {
-    //             console.error('Error en login:', result.payload);
-    //         }
-    //     });
-    // };
-
     return (
         <div className="fullscreen-container">
             <Container>

@@ -14,12 +14,19 @@ function TaskManager() {
         dispatch(fetchTasks());
     }, [dispatch]);
 
+    const formatDate = (dateString) => {
+        const options = { day: '2-digit', month: '2-digit', year: '2-digit' };
+        return new Date(dateString).toLocaleDateString('es-ES', options); // Formato DD/MM/AA
+    };
+
+    // Crear
     const handleCreateTask = (e) => {
         e.preventDefault();
         dispatch(createTask(newTask));
         setNewTask({ title: '', description: '' });
     };
 
+    // Actualizar
     const handleUpdateTask = (e) => {
         e.preventDefault();
         dispatch(updateTask({ id: editingTask._id, data: newTask }));
@@ -27,10 +34,12 @@ function TaskManager() {
         setNewTask({ title: '', description: '' });
     };
 
+    // Borrar
     const handleDeleteTask = (id) => {
         dispatch(deleteTask(id));
     };
 
+    // Editar
     const handleEditClick = (task) => {
         setEditingTask(task);
         setNewTask({ title: task.title, description: task.description });
@@ -89,16 +98,20 @@ function TaskManager() {
                         <Table striped bordered hover>
                             <thead>
                                 <tr>
+                                    <th>#</th> {/* Número de tarea */}
                                     <th>Título</th>
                                     <th>Descripción</th>
+                                    <th>Fecha de Creación</th> {/* Fecha de creación */}
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {tasks.map((task) => (
+                                {tasks.map((task, index) => (
                                     <tr key={task._id}>
+                                        <td>{index + 1}</td> {/* Mostrar número de tarea */}
                                         <td>{task.title}</td>
                                         <td>{task.description}</td>
+                                        <td>{formatDate(task.createdAt)}</td> {/* Mostrar fecha formateada */}
                                         <td>
                                             <Button
                                                 variant="warning"
