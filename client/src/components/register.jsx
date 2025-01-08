@@ -15,11 +15,16 @@ function Register({ onSwitchToLogin }) {
     const handleSubmit = (e) => {
         e.preventDefault();
         dispatch(register({ username, email, password })).then((result) => {
+            console.log('Resultado del registro:', result); // Agrega este log
             if (result.meta.requestStatus === 'fulfilled') {
+                console.log('Registro exitoso, redirigiendo al login.');
                 navigate('/', { state: { successMessage: 'Registro exitoso. Por favor, inicia sesión.' } });
+            } else {
+                console.error('Error en el registro:', result.payload || 'Error desconocido');
             }
-        });
+        }, 500);
     };
+
 
     return (
         <div className="fullscreen-container">
