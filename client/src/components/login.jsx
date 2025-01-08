@@ -87,7 +87,7 @@ function Login({ onSwitchToRegister }) {
                                 <div className="text-center mt-3">
                                     <Button
                                         variant="link"
-                                        onClick={onSwitchToRegister}
+                                        onClick={() => navigate('/register')}
                                         className="text-decoration-none"
                                     >
                                         Registrarse

@@ -75,7 +75,7 @@ function Register({ onSwitchToLogin }) {
                                 <div className="text-center mt-3">
                                     <Button
                                         variant="link"
-                                        onClick={onSwitchToLogin}
+                                        onClick={() => navigate('/')}
                                         className="text-decoration-none"
                                     >
                                         ← Volver al Login
