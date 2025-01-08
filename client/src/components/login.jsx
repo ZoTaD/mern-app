@@ -17,18 +17,15 @@ function Login({ onSwitchToRegister }) {
         e.preventDefault();
         console.log('Datos enviados:', { email, password });
 
-        dispatch(login({ email, password }))
-            .then((result) => {
-                if (result.meta.requestStatus === 'fulfilled') {
-                    console.log('Resultado del login:', result);
-                    navigate('/');
-                } else {
-                    console.error('Error en login:', result.payload || 'Error desconocido');
-                }
-            })
-            .catch((err) => {
-                console.error('Error inesperado:', err);
-            });
+        dispatch(login({ email, password })).then((result) => {
+            if (result.meta.requestStatus === 'fulfilled') {
+                console.log('Resultado del login:', result);
+                navigate('/home');
+            } else {
+                console.error('Error en login:', result.payload || 'Error desconocido');
+            }
+        });
+
     };
 
     // Revisar codigo de los handleSubmits
