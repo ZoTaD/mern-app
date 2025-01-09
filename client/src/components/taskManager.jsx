@@ -22,8 +22,6 @@ function TaskManager() {
         return new Date(dateString).toLocaleDateString('es-ES', options); // Formato DD/MM/AA
     };
 
-
-
     // Crear
     const handleCreateTask = (e) => {
         e.preventDefault();
