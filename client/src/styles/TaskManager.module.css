@@ -19,7 +19,13 @@
 
 /* Clase interna aplicada al div dentro del Col */
 .droppable-column {
-    padding: 16px;
+    min-height: 200px; /* Asegura que haya un área mínima de interacción */
+    height: 100%; /* Hace que el Droppable ocupe toda la altura de la columna */
     border-radius: 8px;
+    padding: 16px;
+    border: 1px dashed #ccc; /* Bordes opcionales para indicar columnas vacías */
 }
+
+
+
 

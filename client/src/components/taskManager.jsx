@@ -171,6 +171,7 @@ function TaskManager() {
                                                 minHeight: '200px', // Asegurar que haya un área mínima
                                                 height: '100%', // Asegurar que ocupe toda la altura del Col
                                                 border: '1px dashed #ccc', 
+                                                borderRadius: '5px',
                                             }}
                                         >
                                             {groupedTasks[status].map((task, index) => (
