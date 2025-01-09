@@ -100,22 +100,17 @@ function TaskManager() {
                 </Col>
             </Row>
             <Row>
-                {loading ? (
-                    <p className="text-center">Cargando tareas...</p>
-                ) : error ? (
-                    <p className="text-center text-danger">Error: {error}</p>
-                ) : (
-                    tasks.map((task, index) => (
-                        <Col key={task._id} md={4} className="mb-3">
-                            <Card className="h-100">
+                <Col md={4}>
+                    <h3 className="text-center">Pendiente</h3>
+                    {tasks
+                        .filter((task) => task.status === 'Pendiente')
+                        .map((task, index) => (
+                            <Card key={task._id} className="mb-3">
                                 <Card.Body>
                                     <div className="d-flex justify-content-between align-items-center mb-3">
                                         <div>
                                             <h6 className="text-muted">#{index + 1}</h6>
                                             <h5>{task.title}</h5>
-                                        </div>
-                                        <div>
-                                            <span className="badge bg-secondary">{task.status}</span>
                                         </div>
                                     </div>
                                     <p>{task.description}</p>
@@ -140,12 +135,86 @@ function TaskManager() {
                                     </Button>
                                 </Card.Footer>
                             </Card>
-                        </Col>
-                    ))
-                )}
+                        ))}
+                </Col>
+                <Col md={4}>
+                    <h3 className="text-center">En Progreso</h3>
+                    {tasks
+                        .filter((task) => task.status === 'En Progreso')
+                        .map((task, index) => (
+                            <Card key={task._id} className="mb-3">
+                                <Card.Body>
+                                    <div className="d-flex justify-content-between align-items-center mb-3">
+                                        <div>
+                                            <h6 className="text-muted">#{index + 1}</h6>
+                                            <h5>{task.title}</h5>
+                                        </div>
+                                    </div>
+                                    <p>{task.description}</p>
+                                    <small className="text-muted">
+                                        Creado el: {formatDate(task.createdAt)}
+                                    </small>
+                                </Card.Body>
+                                <Card.Footer className="d-flex justify-content-between">
+                                    <Button
+                                        variant="warning"
+                                        size="sm"
+                                        onClick={() => handleEditClick(task)}
+                                    >
+                                        Editar
+                                    </Button>
+                                    <Button
+                                        variant="danger"
+                                        size="sm"
+                                        onClick={() => handleDeleteTask(task._id)}
+                                    >
+                                        Eliminar
+                                    </Button>
+                                </Card.Footer>
+                            </Card>
+                        ))}
+                </Col>
+                <Col md={4}>
+                    <h3 className="text-center">Completada</h3>
+                    {tasks
+                        .filter((task) => task.status === 'Completada')
+                        .map((task, index) => (
+                            <Card key={task._id} className="mb-3">
+                                <Card.Body>
+                                    <div className="d-flex justify-content-between align-items-center mb-3">
+                                        <div>
+                                            <h6 className="text-muted">#{index + 1}</h6>
+                                            <h5>{task.title}</h5>
+                                        </div>
+                                    </div>
+                                    <p>{task.description}</p>
+                                    <small className="text-muted">
+                                        Creado el: {formatDate(task.createdAt)}
+                                    </small>
+                                </Card.Body>
+                                <Card.Footer className="d-flex justify-content-between">
+                                    <Button
+                                        variant="warning"
+                                        size="sm"
+                                        onClick={() => handleEditClick(task)}
+                                    >
+                                        Editar
+                                    </Button>
+                                    <Button
+                                        variant="danger"
+                                        size="sm"
+                                        onClick={() => handleDeleteTask(task._id)}
+                                    >
+                                        Eliminar
+                                    </Button>
+                                </Card.Footer>
+                            </Card>
+                        ))}
+                </Col>
             </Row>
         </Container>
     );
+
 }
 
 export default TaskManager;
