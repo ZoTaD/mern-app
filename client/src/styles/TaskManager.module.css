@@ -1,25 +1,25 @@
-/* Clases aplicadas al Col */
+/* Bordes aplicados al Col */
 .pending-column {
-    background-color: #f8d7da; /* Rojo pastel */
+    border: 1px solid #f8d7da; /* Rojo pastel */
     border-radius: 8px;
     padding: 8px;
 }
 
 .in-progress-column {
-    background-color: #fff3cd; /* Amarillo pastel */
+    border: 1px solid #fff3cd; /* Amarillo pastel */
     border-radius: 8px;
     padding: 8px;
 }
 
 .completed-column {
-    background-color: #d4edda; /* Verde pastel */
+    border: 1px solid #d4edda; /* Verde pastel */
     border-radius: 8px;
     padding: 8px;
 }
 
 /* Clase interna aplicada al div dentro del Col */
 .droppable-column {
-    min-height: 400px;
     padding: 16px;
     border-radius: 8px;
 }
+

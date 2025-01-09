@@ -159,6 +159,10 @@ function TaskManager() {
                                         <div
                                             {...provided.droppableProps}
                                             ref={provided.innerRef}
+                                            style={{
+                                                minHeight: `${groupedTasks[status].length * 100}px`,
+                                                marginRight: '8px',
+                                            }}
                                         >
                                             {groupedTasks[status].map((task, index) => (
                                                 <Draggable key={task._id} draggableId={task._id} index={index}>
