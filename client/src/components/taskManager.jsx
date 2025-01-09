@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchTasks, createTask, updateTask, deleteTask } from '../store/taskSlice';
 import { Card, Form, Button, Container, Row, Col } from 'react-bootstrap';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import styles from './taskManager.module.css';
 // import { data } from 'react-router-dom';
 
 function TaskManager() {
@@ -140,29 +141,27 @@ function TaskManager() {
                 </Row>
                 <Row>
                     {['Pendiente', 'En Progreso', 'Completada'].map((status) => (
-                        <Col md={4} key={status}>
-                            <div
-                                className={`column ${status === 'Pendiente'
-                                    ? 'pending-column'
+                        <Col
+                            md={4}
+                            key={status}
+                            className={
+                                status === 'Pendiente'
+                                    ? styles['pending-column']
                                     : status === 'En Progreso'
-                                        ? 'in-progress-column'
-                                        : 'completed-column'
-                                    }`}
-                            >
+                                        ? styles['in-progress-column']
+                                        : styles['completed-column']
+                            }
+                        >
+                            <div className={styles['droppable-column']}>
                                 <h3 className="text-center">{status}</h3>
                                 <Droppable droppableId={status}>
                                     {(provided) => (
                                         <div
                                             {...provided.droppableProps}
                                             ref={provided.innerRef}
-                                            className="droppable-column"
                                         >
                                             {groupedTasks[status].map((task, index) => (
-                                                <Draggable
-                                                    key={task._id}
-                                                    draggableId={task._id}
-                                                    index={index}
-                                                >
+                                                <Draggable key={task._id} draggableId={task._id} index={index}>
                                                     {(provided) => (
                                                         <Card
                                                             ref={provided.innerRef}
