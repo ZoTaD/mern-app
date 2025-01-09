@@ -38,18 +38,26 @@ export const updateTask = createAsyncThunk(
     'tasks/updateTask',
     async ({ id, data }, { rejectWithValue }) => {
         try {
+            // Obtener el token del almacenamiento local
             const token = localStorage.getItem('token');
             if (!token) throw new Error('Token no disponible');
+
+            // Realizar la solicitud al backend
             const response = await axios.put(`${API_URL}/api/tasks/${id}`, data, {
                 headers: { Authorization: `Bearer ${token}` },
             });
+
+            // Devolver la tarea actualizada del backend
             return response.data;
         } catch (error) {
-            const errorMessage = error.response?.data?.message || 'Error al actualizar la tarea';
+            // Manejar errores y devolver un mensaje claro
+            const errorMessage =
+                error.response?.data?.message || error.message || 'Error al actualizar la tarea';
             return rejectWithValue(errorMessage);
         }
     }
 );
+
 
 // Eliminar una tarea
 export const deleteTask = createAsyncThunk('tasks/deleteTask', async (id, { rejectWithValue }) => {

@@ -32,6 +32,7 @@ function TaskManager() {
         dispatch(updateTask({ id: editingTask._id, data: newTask }));
         setEditingTask(null);
         setNewTask({ title: '', description: '' });
+        dispatch(fetchTasks()); // Actualizar lista de tareas
     };
 
     // Borrar
@@ -48,6 +49,7 @@ function TaskManager() {
     return (
         <Container>
             <Row>
+
                 <Col>
                     <h2 className="text-center mb-4">Gestión de tareas</h2>
                     <Form onSubmit={editingTask ? handleUpdateTask : handleCreateTask}>
@@ -100,6 +102,7 @@ function TaskManager() {
                 </Col>
             </Row>
             <Row>
+                {/* Columna de tareas pendientes */}
                 <Col md={4}>
                     <h3 className="text-center">Pendiente</h3>
                     {tasks
@@ -137,6 +140,7 @@ function TaskManager() {
                             </Card>
                         ))}
                 </Col>
+                {/* Columna de tareas en progreso */}
                 <Col md={4}>
                     <h3 className="text-center">En Progreso</h3>
                     {tasks
@@ -174,6 +178,7 @@ function TaskManager() {
                             </Card>
                         ))}
                 </Col>
+                {/* Columna de tareas completadas */}
                 <Col md={4}>
                     <h3 className="text-center">Completada</h3>
                     {tasks
