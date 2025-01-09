@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchTasks, createTask, updateTask, deleteTask } from '../store/taskSlice';
 import { Card, Form, Button, Container, Row, Col } from 'react-bootstrap';
+import { data } from 'react-router-dom';
 
 function TaskManager() {
     const dispatch = useDispatch();
@@ -29,9 +30,15 @@ function TaskManager() {
     // Actualizar
     const handleUpdateTask = (e) => {
         e.preventDefault();
-        dispatch(updateTask({ id: editingTask._id, data: newTask }));
+
+        // Crear un objeto con los datos actualizados
+        const updatedTask = {
+            ...newTask, // Incluir title, description y status
+        };
+
+        dispatch(updateTask({ id: editingTask._id, data: newTask, data: updatedTask }));
         setEditingTask(null);
-        setNewTask({ title: '', description: '' });
+        setNewTask({ title: '', description: '', status: 'Pendiente' });
         dispatch(fetchTasks()); // Actualizar lista de tareas
     };
 
@@ -43,7 +50,7 @@ function TaskManager() {
     // Editar
     const handleEditClick = (task) => {
         setEditingTask(task);
-        setNewTask({ title: task.title, description: task.description });
+        setNewTask({ title: task.title, description: task.description, status: task.status, });
     };
 
     return (

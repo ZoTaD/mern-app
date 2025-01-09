@@ -97,9 +97,11 @@ const taskSlice = createSlice({
                 state.tasks.push(action.payload);
             })
             .addCase(updateTask.fulfilled, (state, action) => {
-                state.tasks = state.tasks.map((task) =>
-                    task._id === action.payload._id ? action.payload : task
-                );
+                const updatedTask = action.payload;
+                const index = state.tasks.findIndex((task) => task._id === updatedTask._id);
+                if (index !== -1) {
+                    state.tasks[index] = updatedTask;
+                }
             })
             .addCase(deleteTask.fulfilled, (state, action) => {
                 state.tasks = state.tasks.filter((task) => task._id !== action.payload);
