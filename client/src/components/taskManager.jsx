@@ -5,7 +5,7 @@ import { Card, Form, Button, Container, Row, Col } from 'react-bootstrap';
 
 function TaskManager() {
     const dispatch = useDispatch();
-    const { tasks, loading, error } = useSelector((state) => state.tasks);
+    const { tasks } = useSelector((state) => state.tasks);
 
     const [newTask, setNewTask] = useState({ title: '', description: '' });
     const [editingTask, setEditingTask] = useState(null);
