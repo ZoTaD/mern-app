@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchTasks, createTask, updateTask, deleteTask } from '../store/taskSlice';
 import { Card, Form, Button, Container, Row, Col } from 'react-bootstrap';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import styles from './taskManager.module.css';
+import styles from '../styles/TaskManager.module.css';
 // import { data } from 'react-router-dom';
 
 function TaskManager() {
