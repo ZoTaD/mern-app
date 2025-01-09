@@ -27,8 +27,12 @@ function TaskManager() {
     // Crear
     const handleCreateTask = (e) => {
         e.preventDefault();
-        dispatch(createTask(newTask));
-        setNewTask({ title: '', description: '' });
+        const taskToCreate = {
+            ...newTask,
+            status: newTask.status || 'Pendiente', // Si no se especifica, usar 'Pendiente'
+        };
+        dispatch(createTask(taskToCreate));
+        setNewTask({ title: '', description: '', status: 'Pendiente' });
     };
 
     // Actualizar
