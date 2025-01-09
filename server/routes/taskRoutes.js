@@ -24,7 +24,7 @@ router.post('/', authenticate, async (req, res) => {
     const { title, description, status } = req.body;
     try {
         // Validar que el status sea una de las opciones permitidas por el esquema
-        if (!['Pendiente', 'En progreso', 'Completada'].includes(status)) {
+        if (!['Pendiente', 'En Progreso', 'Completada'].includes(status)) {
             return res.status(400).json({ message: 'Estado inválido para la tarea' });
         }
         
