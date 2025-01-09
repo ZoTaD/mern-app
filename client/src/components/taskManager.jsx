@@ -36,7 +36,7 @@ function TaskManager() {
             ...newTask, // Incluir title, description y status
         };
 
-        dispatch(updateTask({ id: editingTask._id, data: newTask, data: updatedTask }));
+        dispatch(updateTask({ id: editingTask._id, data: updatedTask }));
         setEditingTask(null);
         setNewTask({ title: '', description: '', status: 'Pendiente' });
         dispatch(fetchTasks()); // Actualizar lista de tareas
