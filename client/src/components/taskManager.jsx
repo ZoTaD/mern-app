@@ -168,8 +168,9 @@ function TaskManager() {
                                             {...provided.droppableProps}
                                             ref={provided.innerRef}
                                             style={{
-                                                minHeight: `${groupedTasks[status].length * 100}px`,
-                                                marginRight: '8px',
+                                                minHeight: '200px', // Asegurar que haya un área mínima
+                                                height: '100%', // Asegurar que ocupe toda la altura del Col
+                                                border: '1px dashed #ccc', 
                                             }}
                                         >
                                             {groupedTasks[status].map((task, index) => (
