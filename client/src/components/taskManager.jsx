@@ -28,7 +28,7 @@ function TaskManager() {
     };
 
     // Actualizar
-    const handleUpdateTask = (e) => {
+    const handleUpdateTask = async (e) => {
         e.preventDefault();
 
         // Crear un objeto con los datos actualizados
@@ -36,10 +36,12 @@ function TaskManager() {
             ...newTask, // Incluir title, description y status
         };
 
-        dispatch(updateTask({ id: editingTask._id, data: updatedTask }));
+        // Verifica el contenido antes de enviar
+        console.log('Datos enviados al backend:', updatedTask);
+
+        await dispatch(updateTask({ id: editingTask._id, data: updatedTask }));
         setEditingTask(null);
         setNewTask({ title: '', description: '', status: 'Pendiente' });
-        dispatch(fetchTasks()); // Actualizar lista de tareas
     };
 
     // Borrar
