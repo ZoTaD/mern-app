@@ -47,3 +47,20 @@
     transform: rotate(360deg);
   }
 }
+
+
+.droppable-column {
+  min-height: 400px;
+  border-radius: 8px;
+  padding: 16px;
+}
+.pending-column {
+  background-color: #f8d7da; /* Rojo pastel */
+}
+.in-progress-column {
+  background-color: #fff3cd; /* Amarillo pastel */
+}
+.completed-column {
+  background-color: #d4edda; /* Verde pastel */
+}
+
