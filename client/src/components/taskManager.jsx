@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchTasks, createTask, updateTask, deleteTask } from '../store/taskSlice';
-import { Table, Form, Button, Container, Row, Col } from 'react-bootstrap';
+import { Card, Form, Button, Container, Row, Col } from 'react-bootstrap';
 
 function TaskManager() {
     const dispatch = useDispatch();
@@ -52,7 +52,7 @@ function TaskManager() {
                     <h2 className="text-center mb-4">Gestión de tareas</h2>
                     <Form onSubmit={editingTask ? handleUpdateTask : handleCreateTask}>
                         <Row>
-                            <Col md={4}>
+                            <Col md={3}>
                                 <Form.Control
                                     type="text"
                                     placeholder="Título"
@@ -61,7 +61,7 @@ function TaskManager() {
                                     className="mb-2"
                                 />
                             </Col>
-                            <Col md={4}>
+                            <Col md={3}>
                                 <Form.Control
                                     type="text"
                                     placeholder="Descripción"
@@ -69,6 +69,17 @@ function TaskManager() {
                                     onChange={(e) => setNewTask({ ...newTask, description: e.target.value })}
                                     className="mb-2"
                                 />
+                            </Col>
+                            <Col md={3}>
+                                <Form.Select
+                                    value={newTask.status}
+                                    onChange={(e) => setNewTask({ ...newTask, status: e.target.value })}
+                                    className="mb-2"
+                                >
+                                    <option value="Pendiente">Pendiente</option>
+                                    <option value="En Progreso">En Progreso</option>
+                                    <option value="Completada">Completada</option>
+                                </Form.Select>
                             </Col>
                             <Col md="auto">
                                 <Button type="submit" variant="primary" className="mb-2">
@@ -89,52 +100,49 @@ function TaskManager() {
                 </Col>
             </Row>
             <Row>
-                <Col>
-                    {loading ? (
-                        <p className="text-center">Cargando tareas...</p>
-                    ) : error ? (
-                        <p className="text-center text-danger">Error: {error}</p>
-                    ) : (
-                        <Table striped bordered hover>
-                            <thead>
-                                <tr>
-                                    <th>#</th> {/* Número de tarea */}
-                                    <th>Título</th>
-                                    <th>Descripción</th>
-                                    <th>Fecha de Creación</th> {/* Fecha de creación */}
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {tasks.map((task, index) => (
-                                    <tr key={task._id}>
-                                        <td>{index + 1}</td> {/* Mostrar número de tarea */}
-                                        <td>{task.title}</td>
-                                        <td>{task.description}</td>
-                                        <td>{formatDate(task.createdAt)}</td> {/* Mostrar fecha formateada */}
-                                        <td>
-                                            <Button
-                                                variant="warning"
-                                                size="sm"
-                                                className="me-2"
-                                                onClick={() => handleEditClick(task)}
-                                            >
-                                                Editar
-                                            </Button>
-                                            <Button
-                                                variant="danger"
-                                                size="sm"
-                                                onClick={() => handleDeleteTask(task._id)}
-                                            >
-                                                Eliminar
-                                            </Button>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </Table>
-                    )}
-                </Col>
+                {loading ? (
+                    <p className="text-center">Cargando tareas...</p>
+                ) : error ? (
+                    <p className="text-center text-danger">Error: {error}</p>
+                ) : (
+                    tasks.map((task, index) => (
+                        <Col key={task._id} md={4} className="mb-3">
+                            <Card className="h-100">
+                                <Card.Body>
+                                    <div className="d-flex justify-content-between align-items-center mb-3">
+                                        <div>
+                                            <h6 className="text-muted">#{index + 1}</h6>
+                                            <h5>{task.title}</h5>
+                                        </div>
+                                        <div>
+                                            <span className="badge bg-secondary">{task.status}</span>
+                                        </div>
+                                    </div>
+                                    <p>{task.description}</p>
+                                    <small className="text-muted">
+                                        Creado el: {formatDate(task.createdAt)}
+                                    </small>
+                                </Card.Body>
+                                <Card.Footer className="d-flex justify-content-between">
+                                    <Button
+                                        variant="warning"
+                                        size="sm"
+                                        onClick={() => handleEditClick(task)}
+                                    >
+                                        Editar
+                                    </Button>
+                                    <Button
+                                        variant="danger"
+                                        size="sm"
+                                        onClick={() => handleDeleteTask(task._id)}
+                                    >
+                                        Eliminar
+                                    </Button>
+                                </Card.Footer>
+                            </Card>
+                        </Col>
+                    ))
+                )}
             </Row>
         </Container>
     );
