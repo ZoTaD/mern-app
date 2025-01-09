@@ -62,19 +62,25 @@ function TaskManager() {
     const handleDragEnd = (result) => {
         const { source, destination } = result;
 
+        // Si no hay un destino válido, salir
         if (!destination) return;
 
-        if (source.droppableId !== destination.droppableId) {
-            const taskId = groupedTasks[source.droppableId][source.index]._id;
+        // Si la tarea no cambia de columna, no hacer nada
+        if (source.droppableId === destination.droppableId) return;
 
-            const updatedTask = {
-                ...groupedTasks[source.droppableId][source.index],
-                status: destination.droppableId,
-            };
+        // Obtener la tarea que se está moviendo
+        const task = groupedTasks[source.droppableId][source.index];
 
-            dispatch(updateTask({ id: taskId, data: updatedTask }));
-        }
+        // Crear el objeto de tarea actualizado
+        const updatedTask = {
+            ...task,
+            status: destination.droppableId,
+        };
+
+        // Actualizar la tarea en el backend y en Redux
+        dispatch(updateTask({ id: task._id, data: updatedTask }));
     };
+
 
     // Agrupar tareas por su estado
     const groupedTasks = {

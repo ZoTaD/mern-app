@@ -1,18 +1,18 @@
 /* Bordes aplicados al Col */
 .pending-column {
-    border: 1px solid #f8d7da; /* Rojo pastel */
+    border: 1px solid #e61224; /* Rojo pastel */
     border-radius: 8px;
     padding: 8px;
 }
 
 .in-progress-column {
-    border: 1px solid #fff3cd; /* Amarillo pastel */
+    border: 1px solid #ecb911; /* Amarillo pastel */
     border-radius: 8px;
     padding: 8px;
 }
 
 .completed-column {
-    border: 1px solid #d4edda; /* Verde pastel */
+    border: 1px solid #12d440; /* Verde pastel */
     border-radius: 8px;
     padding: 8px;
 }

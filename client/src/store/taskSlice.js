@@ -99,8 +99,9 @@ const taskSlice = createSlice({
             .addCase(updateTask.fulfilled, (state, action) => {
                 const updatedTask = action.payload;
                 const index = state.tasks.findIndex((task) => task._id === updatedTask._id);
+
                 if (index !== -1) {
-                    state.tasks[index] = updatedTask;
+                    state.tasks[index] = updatedTask; // Actualizar solo la tarea modificada
                 }
             })
             .addCase(deleteTask.fulfilled, (state, action) => {
