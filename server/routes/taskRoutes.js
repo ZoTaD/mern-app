@@ -48,11 +48,11 @@ router.get('/', authenticate, async (req, res) => {
 // Endpoint para actualizar una tarea
 router.put('/:id', authenticate, async (req, res) => {
     const { id } = req.params;
-    const { title, description, completed } = req.body;
+    const { title, description, status } = req.body;
     try {
         const updatedTask = await Task.findOneAndUpdate(
             { _id: id, user: req.userId },
-            { title, description, completed },
+            { title, description, status },
             { new: true }
         );
         if (!updatedTask) {
