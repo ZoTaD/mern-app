@@ -21,11 +21,17 @@ const authenticate = (req, res, next) => {
 
 // Endpoint para crear una nueva tarea
 router.post('/', authenticate, async (req, res) => {
-    const { title, description } = req.body;
+    const { title, description, status } = req.body;
     try {
+        // Validar que el status sea una de las opciones permitidas por el esquema
+        if (!['Pendiente', 'En progreso', 'Completada'].includes(status)) {
+            return res.status(400).json({ message: 'Estado inválido para la tarea' });
+        }
+        
         const newTask = new Task({
             title,
             description,
+            status,
             user: req.userId, // Asociar la tarea al usuario autenticado
         });
         await newTask.save();
