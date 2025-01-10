@@ -4,6 +4,7 @@ import { fetchTasks, createTask, updateTask, deleteTask } from '../store/taskSli
 import { Card, Form, Button, Container, Row, Col } from 'react-bootstrap';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import styles from '../styles/TaskManager.module.css';
+import Swal from 'sweetalert2';
 // import { data } from 'react-router-dom';
 
 function TaskManager() {
@@ -52,7 +53,21 @@ function TaskManager() {
 
     // Borrar
     const handleDeleteTask = (id) => {
-        dispatch(deleteTask(id));
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: 'Esta acción no se puede deshacer',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                dispatch(deleteTask(id));
+                Swal.fire('Eliminado', 'La tarea ha sido eliminada.', 'success');
+            }
+        });
     };
 
     // Editar
@@ -170,7 +185,6 @@ function TaskManager() {
                                             style={{
                                                 minHeight: '200px',
                                                 height: '100%',
-                                                
                                                 borderRadius: '5px',
                                             }}
                                         >
