@@ -168,9 +168,9 @@ function TaskManager() {
                                             {...provided.droppableProps}
                                             ref={provided.innerRef}
                                             style={{
-                                                minHeight: '200px', // Asegurar que haya un área mínima
-                                                height: '100%', // Asegurar que ocupe toda la altura del Col
-                                                border: '1px dashed #ccc', 
+                                                minHeight: '200px',
+                                                height: '100%',
+                                                border: '1px dashed #ccc',
                                                 borderRadius: '5px',
                                             }}
                                         >

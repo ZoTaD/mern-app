@@ -1,31 +1,26 @@
-/* Bordes aplicados al Col */
 .pending-column {
     border: 1px solid #e61224; /* Rojo pastel */
     border-radius: 8px;
     padding: 8px;
+    background: linear-gradient(to bottom, rgba(230, 18, 36, 0.2), transparent);
 }
 
 .in-progress-column {
     border: 1px solid #ecb911; /* Amarillo pastel */
     border-radius: 8px;
     padding: 8px;
+    background: linear-gradient(to bottom, rgba(236, 185, 17, 0.2), transparent);
 }
 
 .completed-column {
     border: 1px solid #12d440; /* Verde pastel */
     border-radius: 8px;
     padding: 8px;
+    background: linear-gradient(to bottom, rgba(18, 212, 64, 0.2), transparent);
 }
 
-/* Clase interna aplicada al div dentro del Col */
 .droppable-column {
-    min-height: 200px; /* Asegura que haya un área mínima de interacción */
-    height: 100%; /* Hace que el Droppable ocupe toda la altura de la columna */
-    border-radius: 8px;
+    min-height: 200px;
+    height: 100%;
     padding: 16px;
-    border: 1px dashed #ccc; /* Bordes opcionales para indicar columnas vacías */
 }
-
-
-
-
