@@ -170,7 +170,7 @@ function TaskManager() {
                                             style={{
                                                 minHeight: '200px',
                                                 height: '100%',
-                                                border: '1px dashed #ccc',
+                                                
                                                 borderRadius: '5px',
                                             }}
                                         >
