@@ -40,7 +40,7 @@ function Home() {
     };
 
     return (
-        <Container fluid style={{ minHeight: '100vh', backgroundColor: '#f8f9fa', paddingTop: '20px' }}>
+        <Container fluid style={{ minHeight: '100vh', paddingTop: '20px' }}>
             <Row className="align-items-center mb-4">
                 <Col>
                     <h1 className="text-left">Bienvenido, {name}</h1>

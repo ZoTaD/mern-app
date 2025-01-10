@@ -10,7 +10,7 @@ function App() {
         <Router>
             <Container
                 className="d-flex justify-content-center align-items-center"
-                style={{ minHeight: '100vh', backgroundColor: '#f8f9fa' }}
+                style={{ minHeight: '100vh' }}
             >
                 <Row className="w-100">
                     <Routes>
