@@ -1,64 +1,133 @@
-# Proyecto MERN - Setup Inicial
+# Proyecto MERN - Administrador de Tareas
 
-Este proyecto consiste en la configuración inicial de una aplicación utilizando el stack MERN (MongoDB, Express, React, Node.js). El objetivo fue crear una estructura básica y realizar las conexiones necesarias para que todas las partes del stack funcionen conjuntamente.
+Este proyecto es un **Administrador de Tareas** desarrollado con el stack MERN (**MongoDB, Express, React, Node.js**). El objetivo principal fue construir una aplicación funcional que permita a los usuarios gestionar tareas (crear, editar, mover entre columnas y eliminar) con un frontend desplegado en **Netlify**, un backend en **Heroku**, y una base de datos alojada en **MongoDB Atlas**.
+
+---
 
 ## Tecnologías Utilizadas
-- **MongoDB**: Base de datos corriendo en un contenedor Docker.
-- **Express**: Framework para el backend de Node.js.
-- **React**: Frontend de la aplicación.
-- **Node.js**: Entorno para el backend.
-- **Docker**: Para contenerizar MongoDB.
 
-## Pasos Realizados
-1. **Estructura del Proyecto**:
-   - Creación de la estructura de carpetas: `client` para el frontend (React) y `server` para el backend (Node.js + Express).
+### Frontend
+- **React**: Biblioteca principal para el desarrollo del frontend.
+- **Axios**: Para realizar solicitudes HTTP al backend.
+- **Bootstrap**: Para la creación rápida de una interfaz de usuario estilizada.
+- **SweetAlert2**: Utilizado para mostrar alertas de confirmación elegantes y dinámicas.
+- Desplegado en **Netlify**.
 
-2. **Conexión a MongoDB**:
-   - Se levantó una instancia de MongoDB usando Docker.
-   - Configuración de `mongoose` en el backend para conectar a la base de datos MongoDB.
+### Backend
+- **Node.js**: Entorno principal para el backend.
+- **Express**: Framework para manejar las rutas y middlewares.
+- **Mongoose**: Para la conexión y gestión de la base de datos **MongoDB**.
+- **JWT**: Para autenticación mediante tokens.
+- **bcryptjs**: Para el hashing seguro de contraseñas.
+- Desplegado en **Heroku**.
 
-3. **Configuración del Backend**:
-   - Se creó un servidor Express y se agregó una ruta raíz (`/`) para confirmar el estado del backend.
-   - Se implementó una ruta de ejemplo (`/api/login`) para recibir credenciales de usuario y validar el login.
+### Base de Datos
+- **MongoDB Atlas**: Base de datos en la nube, utilizada para almacenar las tareas y la información de los usuarios.
 
-4. **Conexión del Frontend con el Backend**:
-   - Se configuró la URL del backend en el frontend utilizando un archivo `.env`.
-   - Se realizó una solicitud GET desde React al endpoint `/` para probar la conexión.
-   - Se implementó un formulario básico de login que realiza una solicitud GET al backend para enviar credenciales.
+---
 
-## Ejecución del Proyecto
+## Características Principales
 
-1. **Levantar el Backend**:
+1. **Gestión de Tareas**:
+   - Crear tareas con título, descripción y estado inicial.
+   - Editar tareas existentes.
+   - Eliminar tareas con confirmación mediante SweetAlert2.
+   - Arrastrar y soltar tareas entre columnas (Pendiente, En Progreso, Completada) con efecto visual.
+
+2. **Autenticación de Usuarios**:
+   - Registro de nuevos usuarios.
+   - Inicio de sesión mediante **JWT**.
+   - Protección de rutas del backend con middleware de autenticación.
+
+3. **Pruebas Locales**:
+   - Durante el desarrollo, las pruebas se realizaron en un entorno local utilizando **localhost** para el backend y frontend.
+
+4. **Estructura del Proyecto**:
+   - **Frontend**: Desplegado en Netlify, conecta con el backend y gestiona el estado global con Redux.
+   - **Backend**: Desplegado en Heroku, proporciona las rutas API necesarias para el funcionamiento de la aplicación.
+   - **Base de datos**: MongoDB Atlas utilizada para almacenar datos de usuarios y tareas.
+
+---
+
+## Dependencias Utilizadas
+
+### Backend
+```json
+"dependencies": {
+    "axios": "^1.7.9",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.13.5"
+}
+```
+
+### Frontend
+- **React**: Biblioteca principal.
+- **Axios**: Para solicitudes HTTP.
+- **Bootstrap**: Para diseño.
+- **SweetAlert2**: Para confirmaciones.
+- **Redux** y **Redux Thunk**: Para manejo de estado global y acciones asíncronas.
+
+---
+
+## Guía de Instalación y Ejecución
+
+### Requisitos
+- **Node.js** instalado.
+- Acceso a MongoDB Atlas o una instancia local de MongoDB.
+- Variables de entorno configuradas en un archivo `.env`.
+
+### Clonar el Proyecto
+```bash
+git clone https://github.com/tu-usuario/proyecto-mern.git
+cd proyecto-mern
+```
+
+### Configuración del Backend
+1. Navegar a la carpeta del backend:
    ```bash
    cd server
+   ```
+2. Instalar las dependencias:
+   ```bash
+   npm install
+   ```
+3. Configurar el archivo `.env` con las siguientes variables:
+   ```makefile
+   MONGO_URI=tu-mongo-uri
+   JWT_SECRET=tu-clave-secreta
+   ```
+4. Iniciar el backend:
+   ```bash
    npm run dev
    ```
-   El backend correrá en `http://localhost:5000`.
 
-2. **Levantar el Frontend**:
+### Configuración del Frontend
+1. Navegar a la carpeta del frontend:
    ```bash
    cd client
+   ```
+2. Instalar las dependencias:
+   ```bash
+   npm install
+   ```
+3. Iniciar el frontend:
+   ```bash
    npm start
    ```
-   El frontend estará disponible en `http://localhost:3000`.
 
-## Notas
-- La conexión entre el frontend y backend se realizó utilizando la API `fetch`.
-- Se agregó el middleware `cors` al backend para permitir la comunicación entre el frontend y el backend.
-- express: Para manejar el servidor web en Node.js.
-- mongoose: Para la conexión a MongoDB.
-- dotenv: Para cargar variables de entorno.
-- cors: Comunicación entre el frontend y backend.
-- bcryptjs: Utilizado para hashing de contraseñas.
-- jsonwebtoken: Utilizado para la autenticación a través de tokens JWT.
+---
 
-- axios: Utilizado para realizar solicitudes HTTP al backend.
-- react-router-dom: Utilizado para manejar el enrutamiento en la aplicación React (para navegar entre    
-diferentes páginas/componentes).
-- redux: Utilizado para el manejo de estado global en la aplicación React.
-- redux-thunk: Middleware de Redux que permite manejar acciones asíncronas, útil cuando se necesitan hacer solicitudes API y manejar los resultados de forma adecuada en el estado global.
+## Despliegue Final
+
+- **Frontend**: Desplegado en **Netlify**.
+- **Backend**: Desplegado en **Heroku**.
+- **Base de Datos**: Configurada en **MongoDB Atlas**.
+
+El despliegue final fue testeado y comprobado en diferentes navegadores y dispositivos, asegurando que la funcionalidad sea consistente y fluida.
 
 
-##Imagenes de las pruebas
-![Login de usuario](./images/Postman1.png)
-![Registro de usuario](./images/Postman2.png)
+

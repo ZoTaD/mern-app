@@ -38,13 +38,10 @@ function TaskManager() {
     const handleUpdateTask = async (e) => {
         e.preventDefault();
 
-        // Crear un objeto con los datos actualizados
+        // Creo un objeto con los datos actualizados
         const updatedTask = {
             ...newTask, // Incluir title, description y status
         };
-
-        // Verifica el contenido antes de enviar
-        console.log('Datos enviados al backend:', updatedTask);
 
         await dispatch(updateTask({ id: editingTask._id, data: updatedTask }));
         setEditingTask(null);
