@@ -129,5 +129,62 @@ cd proyecto-mern
 
 El despliegue final fue testeado y comprobado en diferentes navegadores y dispositivos, asegurando que la funcionalidad sea consistente y fluida.
 
+---
 
+## Explicación del Flujo y Funciones Principales
+
+### Flujo de Autenticación con JWT
+1. El usuario inicia sesión enviando sus credenciales (**email** y **contraseña**) al endpoint `/api/auth/login`.
+2. El backend verifica las credenciales:
+   - Si son correctas, genera un **JWT** (firmado con `JWT_SECRET`) y lo envía como respuesta junto con la información del usuario.
+   - Si son incorrectas, devuelve un error `401 Unauthorized`.
+3. El frontend almacena el **JWT** en el almacenamiento local o en cookies seguras.
+4. En cada solicitud subsecuente, el **JWT** se envía en los encabezados de autorización:
+   ```
+   Authorization: Bearer <tu-token>
+   ```
+5. El middleware de autenticación en el backend valida el **JWT**:
+   - Si el token es válido, permite el acceso a la ruta protegida.
+   - Si no es válido o falta, devuelve un error `401 Unauthorized`.
+
+---
+
+### Flujo del CRUD de Tareas
+
+#### Crear una Tarea
+1. El usuario envía una solicitud POST al endpoint `/api/tasks` con los datos de la tarea:
+   ```json
+   {
+       "title": "Nueva Tarea",
+       "description": "Descripción de la tarea",
+       "status": "Pendiente"
+   }
+   ```
+2. El backend guarda la tarea en la base de datos, asociándola al usuario autenticado.
+3. Devuelve la tarea creada como respuesta.
+
+#### Leer Todas las Tareas
+1. El usuario envía una solicitud GET al endpoint `/api/tasks`.
+2. El backend retorna todas las tareas asociadas al usuario autenticado.
+
+#### Actualizar una Tarea
+1. El usuario envía una solicitud PUT al endpoint `/api/tasks/:id` con los campos a actualizar:
+   ```json
+   {
+       "description": "Descripción actualizada",
+       "status": "En progreso"
+   }
+   ```
+2. El backend verifica que la tarea pertenezca al usuario y actualiza los campos especificados.
+3. Devuelve la tarea actualizada como respuesta.
+
+#### Eliminar una Tarea
+1. El usuario envía una solicitud DELETE al endpoint `/api/tasks/:id`.
+2. El backend verifica que la tarea pertenezca al usuario.
+3. Elimina la tarea y devuelve un mensaje de confirmación:
+   ```json
+   {
+       "message": "Tarea eliminada correctamente"
+   }
+   ```
 

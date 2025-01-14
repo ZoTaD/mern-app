@@ -55,7 +55,6 @@ router.post('/login', async (req, res) => {
     try {
         // Buscar al usuario por email
         const user = await User.findOne({ email });
-        console.log('Usuario encontrado:', user); // Log para verificar el usuario
 
         if (!user) {
             console.warn('Usuario no encontrado.');
@@ -64,7 +63,6 @@ router.post('/login', async (req, res) => {
 
         // Verificar la contraseña
         const isMatch = await bcrypt.compare(password, user.password);
-        console.log('Contraseña correcta:', isMatch); // Log para la contraseña
 
         if (!isMatch) {
             console.warn('Contraseña incorrecta.');
@@ -75,8 +73,6 @@ router.post('/login', async (req, res) => {
         const token = jwt.sign({ id: user._id, username: user.username }, process.env.JWT_SECRET, {
             expiresIn: '2h',
         });
-        console.log('Token generado:', token); // Log para el token
-
         res.status(200).json({ token });
     } catch (error) {
         console.error('Error en /login:', error);

@@ -6,17 +6,6 @@ const router = express.Router();
 
 // Endpoint para obtener datos del usuario
 router.get('/', async (req, res) => {
-    console.log('Llamada recibida en /api/user');
-    console.log('Headers recibidos:', req.headers);
-    //Supongamos que llega una solicitud con lo siguiente:
-    //req.headers = {
-    //  authorization: 'Bearer abc123xyz'
-    //};
-    // const token = req.headers.authorization?.split(' ')[1];
-    // Esto hace lo siguiente:
-    // Accede a req.headers.authorization: 'Bearer abc123xyz'.
-    // Divide la cadena: ['Bearer', 'abc123xyz'].
-    // Selecciona el segundo elemento([1]): 'abc123xyz'.
     const token = req.headers.authorization
         ? req.headers.authorization.split(' ')[1]
         : undefined;
