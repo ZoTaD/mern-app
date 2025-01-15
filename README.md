@@ -187,6 +187,7 @@ El despliegue final fue testeado y comprobado en diferentes navegadores y dispos
        "message": "Tarea eliminada correctamente"
    }
    ```
+---
 
 #### Manejo de store
 
