@@ -141,7 +141,7 @@ El despliegue final fue testeado y comprobado en diferentes navegadores y dispos
 3. El frontend almacena el **JWT** en el almacenamiento local o en cookies seguras.
 4. En cada solicitud subsecuente, el **JWT** se envía en los encabezados de autorización:
    ```
-   Authorization: Bearer <tu-token>
+   Authorization: Bearer <token>
    ```
 5. El middleware de autenticación en el backend valida el **JWT**:
    - Si el token es válido, permite el acceso a la ruta protegida.
@@ -188,3 +188,31 @@ El despliegue final fue testeado y comprobado en diferentes navegadores y dispos
    }
    ```
 
+#### Manejo de store
+
+El store es el punto central para gestionar el estado global en el frontend utilizando Redux. Centraliza toda la información relevante de la aplicación, como las tareas del usuario autenticado y el estado de la autenticación.
+
+  ```
+   import { configureStore } from '@reduxjs/toolkit';
+   import tasksReducer from './taskSlice';
+   import authReducer from './authSlice';
+
+   const store = configureStore({
+      reducer: {
+         tasks: tasksReducer,
+         auth: authReducer,
+      },
+   });
+
+   export default store;
+   ```
+
+### Funciones Clave en el Store
+
+  - taskSlice: Maneja el estado de las tareas.
+  - Acciones: fetchTasks, createTask, updateTask, deleteTask.
+
+  - authSlice: Gestiona el estado de autenticación.
+  - Acciones: login, logout, register.
+
+  ---
