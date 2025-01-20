@@ -16,7 +16,7 @@ describe('Auth Unit Tests', () => {
 
     const result = await bcrypt.hash(password, 10);
 
-    expect(bcrypt.hash).toHaveBeenCalledWith(password, 10); // Asegúrate de que se llame con los argumentos correctos
+    expect(bcrypt.hash).toHaveBeenCalledWith(password, 10); 
     expect(result).toBe(hashedPassword); // Verifica el resultado
   });
 

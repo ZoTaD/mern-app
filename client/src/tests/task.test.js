@@ -31,7 +31,7 @@ describe('Task Slice', () => {
         // Autentica al usuario antes de las pruebas
         const loginResult = await store.dispatch(login(mockUser));
         expect(loginResult.type).toBe('auth/login/fulfilled');
-        expect(global.localStorage.setItem).toHaveBeenCalledWith('token', mockToken); // Ahora funcionará
+        expect(global.localStorage.setItem).toHaveBeenCalledWith('token', mockToken); 
     });
 
     afterEach(() => {
