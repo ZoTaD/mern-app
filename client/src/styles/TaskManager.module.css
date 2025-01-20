@@ -27,6 +27,5 @@
 .no-wrap-row {
     display: flex; 
     flex-wrap: nowrap !important; 
-    gap: 10px; 
-    overflow-x: auto; 
+    gap: 10px;
 }
