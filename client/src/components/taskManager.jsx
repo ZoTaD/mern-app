@@ -159,7 +159,7 @@ function TaskManager() {
                         </Form>
                     </Col>
                 </Row>
-                <Row>
+                <Row className="custom-row" >
                     {['Pendiente', 'En Progreso', 'Completada'].map((status) => (
                         <Col
                             md={4}

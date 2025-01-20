@@ -24,3 +24,6 @@
     height: 100%;
     padding: 16px;
 }
+.custom-row {
+    gap: 10px; 
+}
