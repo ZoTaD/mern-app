@@ -24,6 +24,9 @@
     height: 100%;
     padding: 16px;
 }
-.custom-row {
-    gap: 10px; 
+.no-wrap-row {
+    display: flex; /* Asegura que es un contenedor flex */
+    flex-wrap: nowrap; /* Elimina el wrapping */
+    gap: 20px; /* Opcional: añade espacio entre columnas */
+    overflow-x: auto; /* Permite scroll horizontal si el contenido se desborda */
 }
