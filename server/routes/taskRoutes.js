@@ -22,24 +22,31 @@ const authenticate = (req, res, next) => {
 // Endpoint para crear una nueva tarea
 router.post('/', authenticate, async (req, res) => {
     const { title, description, status } = req.body;
+
+    console.log('Datos recibidos en el servidor:', { title, description, status, userId: req.userId });
+
     try {
-        // Validar que el status sea una de las opciones permitidas por el esquema
+        // Validar que el status sea válido
         if (!['Pendiente', 'En Progreso', 'Completada'].includes(status)) {
             return res.status(400).json({ message: 'Estado inválido para la tarea' });
         }
-    
+
+        // Crear la nueva tarea
         const newTask = new Task({
             title,
             description,
             status,
-            user: req.userId, // Asociar la tarea al usuario autenticado
+            user: req.userId,
         });
+
         await newTask.save();
         res.status(201).json(newTask);
     } catch (error) {
+        console.error('Error al crear la tarea:', error.message);
         res.status(500).json({ message: 'Error al crear la tarea' });
     }
 });
+
 
 // Endpoint para obtener todas las tareas del usuario autenticado
 router.get('/', authenticate, async (req, res) => {

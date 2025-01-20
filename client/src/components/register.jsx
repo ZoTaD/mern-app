@@ -63,34 +63,44 @@ function Register({ onSwitchToLogin }) {
                                 <Card.Title className="text-center mb-4">Registrarse</Card.Title>
                                 {registerError && <p className="text-danger">{registerError}</p>}
                                 <Form onSubmit={handleSubmit}>
-                                    <Form.Group controlId="username" className="mb-3">
-                                        <Form.Label>Usuario</Form.Label>
+                                    <Form.Group className="mb-3">
+                                        <Form.Label htmlFor="username">Usuario</Form.Label>
                                         <Form.Control
+                                            id="username"
                                             type="text"
+                                            data-testid="username"
+                                            aria-label="username"
                                             placeholder="Ingresa tu usuario"
                                             value={username}
                                             onChange={(e) => setUsername(e.target.value)}
                                         />
                                     </Form.Group>
-                                    <Form.Group controlId="email" className="mb-3">
-                                        <Form.Label>Email</Form.Label>
+                                    <Form.Group className="mb-3">
+                                        <Form.Label htmlFor="email">Email</Form.Label>
                                         <Form.Control
+                                            id="email"
                                             type="email"
+                                            data-testid="email"
+                                            aria-label="email"
                                             placeholder="Ingresa tu email"
                                             value={email}
                                             onChange={handleEmailChange}
                                         />
                                         {emailError && <p className="text-danger">{emailError}</p>}
                                     </Form.Group>
-                                    <Form.Group controlId="password" className="mb-3">
-                                        <Form.Label>Contraseña</Form.Label>
+                                    <Form.Group className="mb-3">
+                                        <Form.Label htmlFor="password">Contraseña</Form.Label>
                                         <Form.Control
+                                            id="password"
                                             type="password"
+                                            data-testid="password"
+                                            aria-label="password"
                                             placeholder="Ingresa tu contraseña"
                                             value={password}
                                             onChange={(e) => setPassword(e.target.value)}
                                         />
                                     </Form.Group>
+
                                     <Button
                                         variant="primary"
                                         type="submit"
