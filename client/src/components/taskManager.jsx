@@ -19,31 +19,30 @@ function TaskManager() {
 
     const formatDate = (dateString) => {
         const options = { day: '2-digit', month: '2-digit', year: '2-digit' };
-        return new Date(dateString).toLocaleDateString('es-ES', options); // Formato DD/MM/AA
+        return new Date(dateString).toLocaleDateString('es-ES', options);
     };
 
-    // Crear
+    // Crear tarea
     const handleCreateTask = (e) => {
         e.preventDefault();
         const taskToCreate = {
             ...newTask,
-            status: newTask.status || 'Pendiente', // Si no se especifica, usar 'Pendiente'
+            status: newTask.status || 'Pendiente',
         };
         dispatch(createTask(taskToCreate));
         setNewTask({ title: '', description: '', status: 'Pendiente' });
     };
 
-    // Actualizar
+    // Actualizar tarea
     const handleUpdateTask = async (e) => {
         e.preventDefault();
-
-        const updatedTask = { ...newTask }; // Incluir title, description y status
+        const updatedTask = { ...newTask };
         await dispatch(updateTask({ id: editingTask._id, data: updatedTask }));
         setEditingTask(null);
         setNewTask({ title: '', description: '', status: 'Pendiente' });
     };
 
-    // Borrar
+    // Borrar tarea
     const handleDeleteTask = (id) => {
         Swal.fire({
             title: '¿Estás seguro?',
@@ -62,12 +61,13 @@ function TaskManager() {
         });
     };
 
-    // Editar
+    // Editar tarea
     const handleEditClick = (task) => {
         setEditingTask(task);
         setNewTask({ title: task.title, description: task.description, status: task.status });
     };
 
+    // Arrastrar y soltar tarea
     const handleDragEnd = (result) => {
         const { source, destination } = result;
 
@@ -75,12 +75,16 @@ function TaskManager() {
 
         if (source.droppableId !== destination.droppableId) {
             const task = groupedTasks[source.droppableId][source.index];
-            const updatedTask = { ...task, status: destination.droppableId };
-            dispatch(updateTask({ id: task._id, data: updatedTask }));
+
+            // Actualiza el estado local inmediatamente
+            dispatch(updateTask.fulfilled({ ...task, status: destination.droppableId }));
+
+            // Luego actualiza en el backend
+            dispatch(updateTask({ id: task._id, data: { ...task, status: destination.droppableId } }));
         }
     };
 
-    // Agrupar tareas por su estado
+    // Agrupar tareas por estado
     const groupedTasks = {
         Pendiente: tasks.filter((task) => task.status === 'Pendiente'),
         'En Progreso': tasks.filter((task) => task.status === 'En Progreso'),
@@ -101,7 +105,7 @@ function TaskManager() {
                                         placeholder="Título"
                                         value={newTask.title}
                                         onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
-                                        className={styles['input-glass']} // Estilo de vidrio para el input
+                                        className={styles['input-glass']}
                                     />
                                 </Col>
                                 <Col md={3}>
@@ -110,14 +114,14 @@ function TaskManager() {
                                         placeholder="Descripción"
                                         value={newTask.description}
                                         onChange={(e) => setNewTask({ ...newTask, description: e.target.value })}
-                                        className={styles['input-glass']} // Estilo de vidrio para el input
+                                        className={styles['input-glass']}
                                     />
                                 </Col>
                                 <Col md={3}>
                                     <Form.Select
                                         value={newTask.status}
                                         onChange={(e) => setNewTask({ ...newTask, status: e.target.value })}
-                                        className={styles['select-glass']} // Estilo de vidrio para el select
+                                        className={styles['select-glass']}
                                     >
                                         <option value="Pendiente">Pendiente</option>
                                         <option value="En Progreso">En Progreso</option>
@@ -125,16 +129,13 @@ function TaskManager() {
                                     </Form.Select>
                                 </Col>
                                 <Col md="auto">
-                                    <Button
-                                        type="submit"
-                                        className={`mb-2 ${styles['button-glass']}`} // Estilo de vidrio para el botón
-                                    >
+                                    <Button type="submit" className={`${styles['button-glass']} mb-2`}>
                                         {editingTask ? 'Actualizar' : 'Agregar'}
                                     </Button>
                                     {editingTask && (
                                         <Button
                                             onClick={() => setEditingTask(null)}
-                                            className={`mb-2 ms-2 ${styles['button-glass']}`} // Estilo de vidrio para el botón
+                                            className={`${styles['button-glass']} mb-2 ms-2`}
                                         >
                                             Cancelar
                                         </Button>
@@ -177,7 +178,10 @@ function TaskManager() {
                                                             ref={provided.innerRef}
                                                             {...provided.draggableProps}
                                                             {...provided.dragHandleProps}
-                                                            className={`mb-3 ${styles['card-glass']}`} // Aplica la clase de vidrio
+                                                            className={`mb-3 ${styles['card-glass']}`}
+                                                            style={{
+                                                                cursor: 'grab',
+                                                            }}
                                                         >
                                                             <Card.Body>
                                                                 <div className="d-flex justify-content-between align-items-center mb-3">
@@ -197,14 +201,14 @@ function TaskManager() {
                                                             </Card.Body>
                                                             <Card.Footer className="d-flex justify-content-between">
                                                                 <Button
-                                                                    className={styles['button-glass']} // Estilo de vidrio para el botón
+                                                                    className={styles['button-glass']}
                                                                     size="sm"
                                                                     onClick={() => handleEditClick(task)}
                                                                 >
                                                                     Editar
                                                                 </Button>
                                                                 <Button
-                                                                    className={styles['button-glass']} // Estilo de vidrio para el botón
+                                                                    className={styles['button-glass']}
                                                                     size="sm"
                                                                     onClick={() => handleDeleteTask(task._id)}
                                                                 >
