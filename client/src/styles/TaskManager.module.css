@@ -69,6 +69,11 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2) !important;
     padding: 1rem !important;
     border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    cursor: grab !important; /* Cambia el cursor a "mover" */
+}
+
+.card-glass:active {
+    cursor: grabbing !important; /* Cambia el cursor al arrastrar */
 }
 
 .card-glass:hover {
