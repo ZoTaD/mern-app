@@ -33,33 +33,50 @@
 /* TaskManager.module.css */
 
 .card-glass {
-    background: rgba(255, 255, 255, 0.15) !important; /* Fondo translúcido */
-    backdrop-filter: blur(10px) !important; /* Efecto de desenfoque */
-    -webkit-backdrop-filter: blur(10px) !important; /* Soporte para Safari */
-    border-radius: 10px !important; /* Bordes redondeados */
-    color: white !important; /* Texto blanco */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2) !important; /* Sombra suave */
+    background: rgba(255, 255, 255, 0.15) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+    border-radius: 10px !important;
+    color: white !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2) !important;
     padding: 1rem !important;
-    border: 1px solid rgba(255, 255, 255, 0.2) !important; /* Borde translúcido */
-  }
-  
-  .button-glass {
-    background: rgba(255, 255, 255, 0.2) !important; /* Fondo translúcido */
-    backdrop-filter: blur(5px) !important; /* Desenfoque */
-    -webkit-backdrop-filter: blur(5px) !important; /* Soporte para Safari */
-    color: white !important; /* Texto blanco */
-    border: 1px solid rgba(255, 255, 255, 0.4) !important; /* Borde */
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+.button-glass {
+    background: rgba(255, 255, 255, 0.2) !important;
+    backdrop-filter: blur(5px) !important;
+    -webkit-backdrop-filter: blur(5px) !important;
+    color: white !important;
+    border: 1px solid rgba(255, 255, 255, 0.4) !important;
     padding: 0.5rem 1rem !important;
     border-radius: 5px !important;
-    transition: all 0.3s ease !important; /* Animación */
-  }
-  
-  .button-glass:hover {
-    background: rgba(255, 255, 255, 0.4) !important; /* Fondo más opaco en hover */
-    color: black !important; /* Texto oscuro en hover */
-  }
+    transition: all 0.3s ease !important;
+}
 
-  .text-white-important {
+.button-glass:hover {
+    background: rgba(255, 255, 255, 0.4) !important;
+    color: black !important;
+}
+
+.input-glass {
+    background: rgba(255, 255, 255, 0.2) !important;
+    backdrop-filter: blur(5px) !important;
+    -webkit-backdrop-filter: blur(5px) !important;
     color: white !important;
-  }
+    border: 1px solid rgba(255, 255, 255, 0.4) !important;
+    padding: 0.5rem !important;
+    border-radius: 5px !important;
+    transition: box-shadow 0.3s ease !important;
+}
+
+.input-glass:focus {
+    outline: none !important;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5) !important;
+}
+
+.text-white-important {
+    color: white !important;
+}
+
   

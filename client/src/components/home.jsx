@@ -3,8 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import TaskManager from './taskManager';
 import { Container, Row, Col, Button } from 'react-bootstrap';
-
-
+import styles from '../styles/TaskManager.module.css'; // Importar los estilos
 
 function Home() {
     const [name, setName] = useState('');
@@ -43,10 +42,13 @@ function Home() {
         <Container fluid style={{ minHeight: '100vh', paddingTop: '20px' }}>
             <Row className="align-items-center mb-4">
                 <Col>
-                    <h1 className="text-left">Bienvenido {name}</h1>
+                    <h1 className={`text-left ${styles['text-white-important']}`}>Bienvenido {name}</h1>
                 </Col>
                 <Col xs="auto" className="text-end">
-                    <Button variant="danger" onClick={handleLogout}>
+                    <Button
+                        className={styles['button-glass']} // Aplica estilo de vidrio al botón
+                        onClick={handleLogout}
+                    >
                         Cerrar sesión
                     </Button>
                 </Col>
