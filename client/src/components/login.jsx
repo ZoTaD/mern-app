@@ -7,6 +7,7 @@ import { Form, Button, Card, Container, Row, Col } from 'react-bootstrap';
 function Login({ onSwitchToRegister }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [localError , setLocalError] = useState(null);
     const dispatch = useDispatch();
     const { loading, error } = useSelector((state) => state.auth);
     const navigate = useNavigate();
@@ -20,9 +21,11 @@ function Login({ onSwitchToRegister }) {
         dispatch(login({ email, password })).then((result) => {
             if (result.meta.requestStatus === 'fulfilled') {
                 console.log('Resultado del login:', result);
+                setLocalError(null);
                 navigate('/home');
             } else {
                 console.error('Error en login:', result.payload || 'Error desconocido');
+                setLocalError('Usuario o contraseña incorrectos');
             }
         });
 
