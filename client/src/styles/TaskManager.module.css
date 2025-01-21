@@ -32,11 +32,12 @@
 
 /* TaskManager.module.css */
 
+/* Asegurar que el texto sea visible en las opciones del select */
 .select-glass {
     background: rgba(255, 255, 255, 0.2) !important;
     backdrop-filter: blur(5px) !important;
     -webkit-backdrop-filter: blur(5px) !important;
-    color: white !important;
+    color: white !important; /* Texto blanco */
     border: 1px solid rgba(255, 255, 255, 0.4) !important;
     padding: 0.5rem !important;
     border-radius: 5px !important;
@@ -46,6 +47,17 @@
 .select-glass:focus {
     outline: none !important;
     box-shadow: 0 0 10px rgba(255, 255, 255, 0.5) !important;
+}
+
+.select-glass option {
+    background: rgba(0, 0, 0, 0.8) !important; /* Fondo oscuro para opciones */
+    color: white !important; /* Texto blanco visible */
+}
+
+/* Opciones en hover */
+.select-glass option:hover {
+    background: rgba(255, 255, 255, 0.3) !important; /* Fondo claro al pasar el mouse */
+    color: black !important; /* Texto oscuro en hover */
 }
 
 .card-glass {
