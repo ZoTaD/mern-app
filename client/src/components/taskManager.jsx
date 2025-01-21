@@ -5,7 +5,6 @@ import { Card, Form, Button, Container, Row, Col } from 'react-bootstrap';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import styles from '../styles/TaskManager.module.css';
 import Swal from 'sweetalert2';
-// import { data } from 'react-router-dom';
 
 function TaskManager() {
     const dispatch = useDispatch();
@@ -95,14 +94,12 @@ function TaskManager() {
         }
     };
 
-
     // Agrupar tareas por su estado
     const groupedTasks = {
         Pendiente: tasks.filter((task) => task.status === 'Pendiente'),
         'En Progreso': tasks.filter((task) => task.status === 'En Progreso'),
         Completada: tasks.filter((task) => task.status === 'Completada'),
     };
-
 
     return (
         <DragDropContext onDragEnd={handleDragEnd}>
@@ -118,7 +115,7 @@ function TaskManager() {
                                         placeholder="Título"
                                         value={newTask.title}
                                         onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
-                                        className="mb-2"
+                                        className={`${styles['input-glass']} mb-2`} // Aplicando estilo de vidrio
                                     />
                                 </Col>
                                 <Col md={3}>
@@ -127,14 +124,14 @@ function TaskManager() {
                                         placeholder="Descripción"
                                         value={newTask.description}
                                         onChange={(e) => setNewTask({ ...newTask, description: e.target.value })}
-                                        className="mb-2"
+                                        className={`${styles['input-glass']} mb-2`} // Aplicando estilo de vidrio
                                     />
                                 </Col>
                                 <Col md={3}>
                                     <Form.Select
                                         value={newTask.status}
                                         onChange={(e) => setNewTask({ ...newTask, status: e.target.value })}
-                                        className="mb-2"
+                                        className={`${styles['select-glass']} mb-2`} // Aplicando estilo de vidrio
                                     >
                                         <option value="Pendiente">Pendiente</option>
                                         <option value="En Progreso">En Progreso</option>
@@ -142,14 +139,16 @@ function TaskManager() {
                                     </Form.Select>
                                 </Col>
                                 <Col md="auto">
-                                    <Button type="submit" variant="primary" className="mb-2">
+                                    <Button
+                                        type="submit"
+                                        className={`${styles['button-glass']} mb-2`} // Aplicando estilo de vidrio
+                                    >
                                         {editingTask ? 'Actualizar' : 'Agregar'}
                                     </Button>
                                     {editingTask && (
                                         <Button
-                                            variant="secondary"
                                             onClick={() => setEditingTask(null)}
-                                            className="mb-2 ms-2"
+                                            className={`${styles['button-glass']} mb-2 ms-2`} // Aplicando estilo de vidrio
                                         >
                                             Cancelar
                                         </Button>
@@ -192,7 +191,7 @@ function TaskManager() {
                                                             ref={provided.innerRef}
                                                             {...provided.draggableProps}
                                                             {...provided.dragHandleProps}
-                                                            className={`mb-3 ${styles['card-glass']}`} // Aplica la clase de vidrio
+                                                            className={`mb-3 ${styles['card-glass']}`}
                                                         >
                                                             <Card.Body>
                                                                 <div className="d-flex justify-content-between align-items-center mb-3">
@@ -206,14 +205,14 @@ function TaskManager() {
                                                             </Card.Body>
                                                             <Card.Footer className="d-flex justify-content-between">
                                                                 <Button
-                                                                    className={styles['button-glass']} // Aplica la clase de vidrio a los botones
+                                                                    className={styles['button-glass']}
                                                                     size="sm"
                                                                     onClick={() => handleEditClick(task)}
                                                                 >
                                                                     Editar
                                                                 </Button>
                                                                 <Button
-                                                                    className={styles['button-glass']} // Aplica la clase de vidrio a los botones
+                                                                    className={styles['button-glass']}
                                                                     size="sm"
                                                                     onClick={() => handleDeleteTask(task._id)}
                                                                 >
@@ -221,7 +220,6 @@ function TaskManager() {
                                                                 </Button>
                                                             </Card.Footer>
                                                         </Card>
-
                                                     )}
                                                 </Draggable>
                                             ))}
@@ -236,9 +234,6 @@ function TaskManager() {
             </Container>
         </DragDropContext>
     );
-
-
-
 }
 
 export default TaskManager;
