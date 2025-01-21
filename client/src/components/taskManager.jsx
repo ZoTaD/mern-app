@@ -71,8 +71,17 @@ function TaskManager() {
         if (source.droppableId !== destination.droppableId) {
             const task = groupedTasks[source.droppableId][source.index];
 
-            // Realizar la actualización en el backend directamente
-            dispatch(updateTask({ id: task._id, data: { ...task, status: destination.droppableId } }));
+            // Actualiza el estado local de Redux primero
+            const updatedTask = { ...task, status: destination.droppableId };
+
+            // Actualiza las tareas localmente para evitar el efecto "rebote"
+            dispatch({
+                type: 'tasks/updateTaskFulfilled',
+                payload: updatedTask,
+            });
+
+            // Luego realiza la actualización en el backend
+            dispatch(updateTask({ id: task._id, data: updatedTask }));
         }
     };
 
@@ -170,6 +179,7 @@ function TaskManager() {
                                                             {...provided.draggableProps}
                                                             {...provided.dragHandleProps}
                                                             className={`mb-3 ${styles['card-glass']}`}
+                                                            style={{ cursor: 'grab' }}
                                                         >
                                                             <Card.Body>
                                                                 <div className="d-flex justify-content-between align-items-center mb-3">
