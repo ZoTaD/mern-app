@@ -192,29 +192,21 @@ function TaskManager() {
                                                             ref={provided.innerRef}
                                                             {...provided.draggableProps}
                                                             {...provided.dragHandleProps}
-                                                            className={`mb-3 ${styles['card-glass']}`} // Aplica la clase de vidrio
+                                                            className={`mb-3 ${styles['card-glass']}`} // Clase CSS
                                                         >
                                                             <Card.Body>
-                                                                <div className="d-flex justify-content-between align-items-center mb-3">
-                                                                    <div style={{ display: 'flex', gap: '42px' }}>
-                                                                        <h6 className="text-muted">#{index + 1}</h6>
-                                                                        <h5>{task.title}</h5>
-                                                                    </div>
-                                                                </div>
+                                                                <h5>{task.title}</h5>
                                                                 <p>{task.description}</p>
-                                                                <small className="text-muted">Creado el: {formatDate(task.createdAt)}</small>
                                                             </Card.Body>
-                                                            <Card.Footer className="d-flex justify-content-between">
+                                                            <Card.Footer>
                                                                 <Button
-                                                                    className={styles['button-glass']} // Aplica la clase de vidrio a los botones
-                                                                    size="sm"
+                                                                    className={styles['button-glass']}
                                                                     onClick={() => handleEditClick(task)}
                                                                 >
                                                                     Editar
                                                                 </Button>
                                                                 <Button
-                                                                    className={styles['button-glass']} // Aplica la clase de vidrio a los botones
-                                                                    size="sm"
+                                                                    className={styles['button-glass']}
                                                                     onClick={() => handleDeleteTask(task._id)}
                                                                 >
                                                                     Eliminar
