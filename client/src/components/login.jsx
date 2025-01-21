@@ -9,7 +9,7 @@ function Login({ onSwitchToRegister }) {
     const [password, setPassword] = useState('');
     const [localError, setLocalError] = useState(null); // Estado local para manejar errores
     const dispatch = useDispatch();
-    const { loading, error } = useSelector((state) => state.auth); // Error global del slice
+    const { loading } = useSelector((state) => state.auth); // Error global del slice
     const navigate = useNavigate();
     const location = useLocation();
     const successMessage = location.state?.successMessage;
