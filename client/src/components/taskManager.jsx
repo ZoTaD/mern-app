@@ -192,33 +192,28 @@ function TaskManager() {
                                                             ref={provided.innerRef}
                                                             {...provided.draggableProps}
                                                             {...provided.dragHandleProps}
-                                                            className="mb-3"
+                                                            className={`mb-3 ${styles['card-glass']}`} // Aplica la clase de vidrio
                                                         >
                                                             <Card.Body>
                                                                 <div className="d-flex justify-content-between align-items-center mb-3">
-                                                                    <div style={{
-                                                                        display: 'flex',
-                                                                        gap: '42px',
-                                                                    }}>
+                                                                    <div style={{ display: 'flex', gap: '42px' }}>
                                                                         <h6 className="text-muted">#{index + 1}</h6>
                                                                         <h5>{task.title}</h5>
                                                                     </div>
                                                                 </div>
                                                                 <p>{task.description}</p>
-                                                                <small className="text-muted">
-                                                                    Creado el: {formatDate(task.createdAt)}
-                                                                </small>
+                                                                <small className="text-muted">Creado el: {formatDate(task.createdAt)}</small>
                                                             </Card.Body>
                                                             <Card.Footer className="d-flex justify-content-between">
                                                                 <Button
-                                                                    variant="warning"
+                                                                    className={styles['button-glass']} // Aplica la clase de vidrio a los botones
                                                                     size="sm"
                                                                     onClick={() => handleEditClick(task)}
                                                                 >
                                                                     Editar
                                                                 </Button>
                                                                 <Button
-                                                                    variant="danger"
+                                                                    className={styles['button-glass']} // Aplica la clase de vidrio a los botones
                                                                     size="sm"
                                                                     onClick={() => handleDeleteTask(task._id)}
                                                                 >
@@ -226,6 +221,7 @@ function TaskManager() {
                                                                 </Button>
                                                             </Card.Footer>
                                                         </Card>
+
                                                     )}
                                                 </Draggable>
                                             ))}
