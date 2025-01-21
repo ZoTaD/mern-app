@@ -198,12 +198,12 @@ function TaskManager() {
                                                             <Card.Body>
                                                                 <div className="d-flex justify-content-between align-items-center mb-3">
                                                                     <div style={{ display: 'flex', gap: '42px' }}>
-                                                                        <h6 className="text-muted">#{index + 1}</h6>
+                                                                        <h6 style={{ color: 'white' }} className="text-muted">#{index + 1}</h6>
                                                                         <h5>{task.title}</h5>
                                                                     </div>
                                                                 </div>
                                                                 <p>{task.description}</p>
-                                                                <small className="text-muted">Creado el: {formatDate(task.createdAt)}</small>
+                                                                <small style={{ color: 'white' }} className="text-muted">Creado el: {formatDate(task.createdAt)}</small>
                                                             </Card.Body>
                                                             <Card.Footer className="d-flex justify-content-between">
                                                                 <Button
