@@ -1,92 +1,157 @@
 # Proyecto MERN - Administrador de Tareas
 
-Este proyecto es un **Administrador de Tareas** desarrollado con el stack MERN (**MongoDB, Express, React, Node.js**). El objetivo principal fue construir una aplicación funcional que permita a los usuarios gestionar tareas (crear, editar, mover entre columnas y eliminar) con un frontend desplegado en **Netlify**, un backend en **Heroku**, y una base de datos alojada en **MongoDB Atlas**.
+Este proyecto es un **Administrador de Tareas** desarrollado con el stack MERN (**MongoDB, Express, React, Node.js**). Su propósito es permitir a los usuarios gestionar tareas mediante una interfaz intuitiva, con funcionalidades como arrastrar y soltar, edición y eliminación de tareas, protegidas mediante autenticación JWT.
+
+El frontend se despliega en **Netlify**, el backend en **Heroku**, y la base de datos en **MongoDB Atlas**, garantizando un entorno escalable y moderno.
 
 ---
 
 ## Tecnologías Utilizadas
 
 ### Frontend
-- **React**: Biblioteca principal para el desarrollo del frontend.
-- **Axios**: Para realizar solicitudes HTTP al backend.
-- **Bootstrap**: Para la creación rápida de una interfaz de usuario estilizada.
-- **SweetAlert2**: Utilizado para mostrar alertas de confirmación elegantes y dinámicas.
+
+- **React**: Para la creación de la interfaz interactiva.
+- **Axios**: Para manejar las solicitudes HTTP al backend.
+- **Bootstrap**: Diseño responsivo y estilizado.
+- **SweetAlert2**: Alertas dinámicas y elegantes.
+- **Redux & Redux Thunk**: Para el manejo del estado global y acciones asíncronas.
+- **React Beautiful DnD**: Para implementar la funcionalidad de arrastrar y soltar en las tareas.
 - Desplegado en **Netlify**.
 
 ### Backend
-- **Node.js**: Entorno principal para el backend.
-- **Express**: Framework para manejar las rutas y middlewares.
-- **Mongoose**: Para la conexión y gestión de la base de datos **MongoDB**.
-- **JWT**: Para autenticación mediante tokens.
-- **bcryptjs**: Para el hashing seguro de contraseñas.
+
+- **Node.js**: Entorno para ejecutar JavaScript en el servidor.
+- **Express**: Framework para estructurar y manejar rutas y middlewares.
+- **Mongoose**: Interfaz ODM para conectarse y trabajar con MongoDB.
+- **JWT**: Autenticación segura mediante tokens.
+- **bcryptjs**: Para hash seguro de contraseñas.
+- **dotenv**: Manejo seguro de variables de entorno.
 - Desplegado en **Heroku**.
 
 ### Base de Datos
-- **MongoDB Atlas**: Base de datos en la nube, utilizada para almacenar las tareas y la información de los usuarios.
+
+- **MongoDB Atlas**: Base de datos NoSQL en la nube, optimizada para grandes volúmenes de datos.
 
 ---
 
 ## Características Principales
 
 1. **Gestión de Tareas**:
-   - Crear tareas con título, descripción y estado inicial.
-   - Editar tareas existentes.
-   - Eliminar tareas con confirmación mediante SweetAlert2.
-   - Arrastrar y soltar tareas entre columnas (Pendiente, En Progreso, Completada) con efecto visual.
 
-2. **Autenticación de Usuarios**:
-   - Registro de nuevos usuarios.
-   - Inicio de sesión mediante **JWT**.
-   - Protección de rutas del backend con middleware de autenticación.
+   - Crear, editar, eliminar y mover tareas entre columnas (Pendiente, En Progreso, Completada).
+   - Interacción fluida con soporte para arrastrar y soltar.
 
-3. **Pruebas Locales**:
-   - Durante el desarrollo, las pruebas se realizaron en un entorno local utilizando **localhost** para el backend y frontend.
+2. **Autenticación y Seguridad**:
 
-4. **Estructura del Proyecto**:
-   - **Frontend**: Desplegado en Netlify, conecta con el backend y gestiona el estado global con Redux.
-   - **Backend**: Desplegado en Heroku, proporciona las rutas API necesarias para el funcionamiento de la aplicación.
-   - **Base de datos**: MongoDB Atlas utilizada para almacenar datos de usuarios y tareas.
+   - Registro de usuarios.
+   - Inicio de sesión con **JWT**.
+   - Middleware para proteger rutas y validar usuarios.
+
+3. **Interfaz Moderna**:
+
+   - Diseño responsivo con Bootstrap.
+   - Alertas dinámicas para confirmaciones.
+
+4. **Despliegue y Escalabilidad**:
+
+   - Frontend desplegado en **Netlify**.
+   - Backend en **Heroku**.
+   - Base de datos gestionada en **MongoDB Atlas**.
+
+5. **Pruebas Automatizadas**:
+
+   - Pruebas completas de los endpoints y funcionalidad del frontend utilizando **Jest** y mocks de datos.
 
 ---
 
-## Dependencias Utilizadas
+## Dependencias y Justificación
 
 ### Backend
-```json
-"dependencies": {
-    "axios": "^1.7.9",
-    "bcryptjs": "^2.4.3",
-    "cors": "^2.8.5",
-    "dotenv": "^16.4.7",
-    "express": "^4.21.2",
-    "jsonwebtoken": "^8.5.1",
-    "mongoose": "^6.13.5"
-}
-```
+
+- **Express**: Framework robusto para manejar solicitudes y middlewares.
+- **Mongoose**: Permite trabajar con MongoDB usando un esquema claro.
+- **JWT**: Implementa un sistema de autenticación confiable.
+- **bcryptjs**: Asegura las contraseñas mediante hashing.
+- **dotenv**: Protege información sensible como claves y URIs.
+- **CORS**: Permite la interacción segura entre frontend y backend.
 
 ### Frontend
-- **React**: Biblioteca principal.
-- **Axios**: Para solicitudes HTTP.
-- **Bootstrap**: Para diseño.
-- **SweetAlert2**: Para confirmaciones.
-- **Redux** y **Redux Thunk**: Para manejo de estado global y acciones asíncronas.
+
+- **React**: Base para crear interfaces modernas y reactivas.
+- **Axios**: Simplifica las solicitudes HTTP al backend.
+- **Redux**: Facilita la gestión del estado global en aplicaciones complejas.
+- **React Beautiful DnD**: Mejora la experiencia del usuario al permitir arrastrar tareas.
+- **SweetAlert2**: Alertas atractivas para confirmaciones.
 
 ---
 
-## Guía de Instalación y Ejecución
+## Flujo de Trabajo
+
+### Registro de Usuario
+
+1. El usuario completa un formulario de registro en el frontend.
+2. **Axios** envía una solicitud POST al backend en `/api/auth/register`.
+3. El backend utiliza **bcryptjs** para hashear la contraseña y almacena al usuario en MongoDB Atlas mediante **Mongoose**.
+4. Respuesta con un mensaje de éxito al frontend.
+
+### Inicio de Sesión
+
+1. El usuario ingresa sus credenciales en el formulario de login.
+2. **Axios** realiza una solicitud POST a `/api/auth/login` con email y contraseña.
+3. El backend valida las credenciales:
+   - Si son válidas, genera un **JWT** usando **jsonwebtoken** y lo devuelve.
+   - Si son inválidas, responde con un error `401`.
+4. El frontend almacena el **JWT** en localStorage y actualiza el estado global con **Redux**.
+
+### Gestión de Tareas
+
+#### Crear Tarea
+
+1. El usuario envía una solicitud POST al endpoint `/api/tasks` con los datos de la tarea:
+   ```json
+   {
+       "title": "Nueva Tarea",
+       "description": "Descripción de la tarea",
+       "status": "Pendiente"
+   }
+   ```
+2. El middleware de autenticación verifica el token enviado en los headers.
+3. El backend almacena la tarea en MongoDB y la asocia al usuario autenticado.
+4. Respuesta con la tarea creada.
+
+#### Leer Tareas
+
+1. El frontend realiza una solicitud GET a `/api/tasks`.
+2. El middleware verifica el token.
+3. El backend consulta MongoDB y devuelve las tareas del usuario autenticado.
+4. El estado global en **Redux** se actualiza con las tareas obtenidas.
+
+#### Actualizar Tarea
+
+1. El usuario modifica los datos de una tarea y envía una solicitud PUT a `/api/tasks/:id`.
+2. El middleware valida el token y verifica que la tarea pertenezca al usuario.
+3. El backend actualiza los campos especificados en MongoDB.
+4. Respuesta con la tarea actualizada y actualización del estado global en **Redux**.
+
+#### Eliminar Tarea
+
+1. El usuario envía una solicitud DELETE a `/api/tasks/:id`.
+2. El middleware valida el token y la propiedad de la tarea.
+3. El backend elimina la tarea de MongoDB.
+4. Respuesta con un mensaje de éxito y eliminación del estado global.
+
+---
+
+## Instalación y Ejecución
 
 ### Requisitos
-- **Node.js** instalado.
-- Acceso a MongoDB Atlas o una instancia local de MongoDB.
-- Variables de entorno configuradas en un archivo `.env`.
 
-### Clonar el Proyecto
-```bash
-git clone https://github.com/tu-usuario/proyecto-mern.git
-cd proyecto-mern
-```
+- **Node.js** instalado.
+- Cuenta activa en **MongoDB Atlas** o instancia local de MongoDB.
+- Configuración de variables de entorno en un archivo `.env`.
 
 ### Configuración del Backend
+
 1. Navegar a la carpeta del backend:
    ```bash
    cd server
@@ -95,10 +160,10 @@ cd proyecto-mern
    ```bash
    npm install
    ```
-3. Configurar el archivo `.env` con las siguientes variables:
-   ```makefile
-   MONGO_URI=tu-mongo-uri
-   JWT_SECRET=tu-clave-secreta
+3. Configurar el archivo `.env`:
+   ```plaintext
+   MONGO_URI=mongo-uri
+   JWT_SECRET=clave-secreta
    ```
 4. Iniciar el backend:
    ```bash
@@ -106,6 +171,7 @@ cd proyecto-mern
    ```
 
 ### Configuración del Frontend
+
 1. Navegar a la carpeta del frontend:
    ```bash
    cd client
@@ -121,99 +187,45 @@ cd proyecto-mern
 
 ---
 
-## Despliegue Final
+## Estructura del Proyecto
 
-- **Frontend**: Desplegado en **Netlify**.
-- **Backend**: Desplegado en **Heroku**.
-- **Base de Datos**: Configurada en **MongoDB Atlas**.
-
-El despliegue final fue testeado y comprobado en diferentes navegadores y dispositivos, asegurando que la funcionalidad sea consistente y fluida.
-
----
-
-## Explicación del Flujo y Funciones Principales
-
-### Flujo de Autenticación con JWT
-1. El usuario inicia sesión enviando sus credenciales (**email** y **contraseña**) al endpoint `/api/auth/login`.
-2. El backend verifica las credenciales:
-   - Si son correctas, genera un **JWT** (firmado con `JWT_SECRET`) y lo envía como respuesta junto con la información del usuario.
-   - Si son incorrectas, devuelve un error `401 Unauthorized`.
-3. El frontend almacena el **JWT** en el almacenamiento local o en cookies seguras.
-4. En cada solicitud subsecuente, el **JWT** se envía en los encabezados de autorización:
-   ```
-   Authorization: Bearer <token>
-   ```
-5. El middleware de autenticación en el backend valida el **JWT**:
-   - Si el token es válido, permite el acceso a la ruta protegida.
-   - Si no es válido o falta, devuelve un error `401 Unauthorized`.
+```
+root/
+│
+├── server/          # Backend
+│   ├── models/      # Modelos de MongoDB
+│   ├── routes/      # Endpoints de la API
+│   ├── middleware/  # Middleware de autenticación
+│   └── server.js    # Configuración principal
+│
+├── client/          # Frontend
+│   ├── src/
+│   │   ├── components/  # Componentes de React
+│   │   ├── store/       # Redux slices
+│   │   └── App.js       # Punto de entrada
+│   └── public/          # Archivos estáticos
+│
+├── .env             # Variables de entorno
+├── package.json     # Dependencias del proyecto
+└── README.md        # Documentación
+```
 
 ---
 
-### Flujo del CRUD de Tareas
+## Despliegue
 
-#### Crear una Tarea
-1. El usuario envía una solicitud POST al endpoint `/api/tasks` con los datos de la tarea:
-   ```json
-   {
-       "title": "Nueva Tarea",
-       "description": "Descripción de la tarea",
-       "status": "Pendiente"
-   }
-   ```
-2. El backend guarda la tarea en la base de datos, asociándola al usuario autenticado.
-3. Devuelve la tarea creada como respuesta.
+1. **Frontend**: Se desplegó en **Netlify** con soporte para rutas personalizadas.
+2. **Backend**: Implementado en **Heroku** con configuración de variables de entorno.
+3. **Base de Datos**: Gestionada en **MongoDB Atlas**, optimizando consultas y almacenamiento.
 
-#### Leer Todas las Tareas
-1. El usuario envía una solicitud GET al endpoint `/api/tasks`.
-2. El backend retorna todas las tareas asociadas al usuario autenticado.
-
-#### Actualizar una Tarea
-1. El usuario envía una solicitud PUT al endpoint `/api/tasks/:id` con los campos a actualizar:
-   ```json
-   {
-       "description": "Descripción actualizada",
-       "status": "En progreso"
-   }
-   ```
-2. El backend verifica que la tarea pertenezca al usuario y actualiza los campos especificados.
-3. Devuelve la tarea actualizada como respuesta.
-
-#### Eliminar una Tarea
-1. El usuario envía una solicitud DELETE al endpoint `/api/tasks/:id`.
-2. El backend verifica que la tarea pertenezca al usuario.
-3. Elimina la tarea y devuelve un mensaje de confirmación:
-   ```json
-   {
-       "message": "Tarea eliminada correctamente"
-   }
-   ```
 ---
 
-#### Manejo de store
+## Pruebas Automatizadas
 
-El store es el punto central para gestionar el estado global en el frontend utilizando Redux. Centraliza toda la información relevante de la aplicación, como las tareas del usuario autenticado y el estado de la autenticación.
+Se configuraron pruebas unitarias para todas las funciones principales usando **Jest**. Esto incluye:
 
-  ```
-   import { configureStore } from '@reduxjs/toolkit';
-   import tasksReducer from './taskSlice';
-   import authReducer from './authSlice';
+- **Autenticación**: Validación de tokens y middleware.
+- **CRUD de Tareas**: Pruebas de endpoints y acciones de Redux.
+- **Frontend**: Simulación de interacciones del usuario y validación del estado global.
 
-   const store = configureStore({
-      reducer: {
-         tasks: tasksReducer,
-         auth: authReducer,
-      },
-   });
 
-   export default store;
-   ```
-
-### Funciones Clave en el Store
-
-  - taskSlice: Maneja el estado de las tareas.
-  - Acciones: fetchTasks, createTask, updateTask, deleteTask.
-
-  - authSlice: Gestiona el estado de autenticación.
-  - Acciones: login, logout, register.
-
-  ---
