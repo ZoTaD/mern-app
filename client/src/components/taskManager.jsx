@@ -193,6 +193,7 @@ function TaskManager() {
                                                             {...provided.draggableProps}
                                                             {...provided.dragHandleProps}
                                                             className={`mb-3 ${styles['card-glass']}`} // Aplica la clase de vidrio
+                                                            style={{ color: 'white' }}
                                                         >
                                                             <Card.Body>
                                                                 <div className="d-flex justify-content-between align-items-center mb-3">
