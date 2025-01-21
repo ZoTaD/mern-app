@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import TaskManager from './TaskManager';
+import TaskManager from './taskManager
 import { Button } from "@/components/ui/button";
 import { LogOut, User } from 'lucide-react';
 
