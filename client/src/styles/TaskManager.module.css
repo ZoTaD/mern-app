@@ -33,37 +33,29 @@
 /* TaskManager.module.css */
 
 .card-glass {
-    background: rgba(255, 255, 255, 0.15); /* Fondo translúcido */
-    backdrop-filter: blur(10px); /* Efecto de desenfoque */
-    border-radius: 10px; /* Bordes redondeados */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Sombra suave */
-    color: white; /* Letras blancas */
-    border: 1px solid rgba(255, 255, 255, 0.2); /* Borde ligero */
-    padding: 1rem; /* Espaciado interno */
-  }
-  
-  .card-glass h5 {
-    color: white; /* Títulos blancos */
-  }
-  
-  .card-glass p,
-  .card-glass small {
-    color: rgba(255, 255, 255, 0.8); /* Texto ligeramente translúcido */
+    background: rgba(255, 255, 255, 0.15) !important; /* Fondo translúcido */
+    backdrop-filter: blur(10px) !important; /* Efecto de desenfoque */
+    -webkit-backdrop-filter: blur(10px) !important; /* Soporte para Safari */
+    border-radius: 10px !important; /* Bordes redondeados */
+    color: white !important; /* Texto blanco */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2) !important; /* Sombra suave */
+    padding: 1rem !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important; /* Borde translúcido */
   }
   
   .button-glass {
-    background: rgba(255, 255, 255, 0.2); /* Fondo translúcido */
-    color: white; /* Letras blancas */
-    border: 1px solid rgba(255, 255, 255, 0.4); /* Borde claro */
-    backdrop-filter: blur(5px); /* Efecto de vidrio */
-    border-radius: 5px; /* Bordes redondeados */
-    padding: 0.5rem 1rem; /* Espaciado interno */
-    transition: background 0.3s, color 0.3s; /* Animaciones */
+    background: rgba(255, 255, 255, 0.2) !important; /* Fondo translúcido */
+    backdrop-filter: blur(5px) !important; /* Desenfoque */
+    -webkit-backdrop-filter: blur(5px) !important; /* Soporte para Safari */
+    color: white !important; /* Texto blanco */
+    border: 1px solid rgba(255, 255, 255, 0.4) !important; /* Borde */
+    padding: 0.5rem 1rem !important;
+    border-radius: 5px !important;
+    transition: all 0.3s ease !important; /* Animación */
   }
   
   .button-glass:hover {
-    background: rgba(255, 255, 255, 0.4); /* Fondo más opaco en hover */
-    color: black; /* Texto oscuro en hover */
-    border-color: rgba(255, 255, 255, 0.6); /* Borde más destacado */
+    background: rgba(255, 255, 255, 0.4) !important; /* Fondo más opaco en hover */
+    color: black !important; /* Texto oscuro en hover */
   }
   

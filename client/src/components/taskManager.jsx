@@ -18,10 +18,10 @@ function TaskManager() {
         dispatch(fetchTasks());
     }, [dispatch]);
 
-    // const formatDate = (dateString) => {
-    //     const options = { day: '2-digit', month: '2-digit', year: '2-digit' };
-    //     return new Date(dateString).toLocaleDateString('es-ES', options); 
-    // };
+    const formatDate = (dateString) => {
+        const options = { day: '2-digit', month: '2-digit', year: '2-digit' };
+        return new Date(dateString).toLocaleDateString('es-ES', options); // Formato DD/MM/AA
+    };
 
     // Crear
     const handleCreateTask = (e) => {
@@ -192,21 +192,29 @@ function TaskManager() {
                                                             ref={provided.innerRef}
                                                             {...provided.draggableProps}
                                                             {...provided.dragHandleProps}
-                                                            className={`mb-3 ${styles['card-glass']}`} // Clase CSS
+                                                            className={`mb-3 ${styles['card-glass']}`} // Aplica la clase de vidrio
                                                         >
                                                             <Card.Body>
-                                                                <h5>{task.title}</h5>
+                                                                <div className="d-flex justify-content-between align-items-center mb-3">
+                                                                    <div style={{ display: 'flex', gap: '42px' }}>
+                                                                        <h6 className="text-muted">#{index + 1}</h6>
+                                                                        <h5>{task.title}</h5>
+                                                                    </div>
+                                                                </div>
                                                                 <p>{task.description}</p>
+                                                                <small className="text-muted">Creado el: {formatDate(task.createdAt)}</small>
                                                             </Card.Body>
-                                                            <Card.Footer>
+                                                            <Card.Footer className="d-flex justify-content-between">
                                                                 <Button
-                                                                    className={styles['button-glass']}
+                                                                    className={styles['button-glass']} // Aplica la clase de vidrio a los botones
+                                                                    size="sm"
                                                                     onClick={() => handleEditClick(task)}
                                                                 >
                                                                     Editar
                                                                 </Button>
                                                                 <Button
-                                                                    className={styles['button-glass']}
+                                                                    className={styles['button-glass']} // Aplica la clase de vidrio a los botones
+                                                                    size="sm"
                                                                     onClick={() => handleDeleteTask(task._id)}
                                                                 >
                                                                     Eliminar
@@ -228,6 +236,9 @@ function TaskManager() {
             </Container>
         </DragDropContext>
     );
+
+
+
 }
 
 export default TaskManager;
