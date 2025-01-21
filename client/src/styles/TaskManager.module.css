@@ -78,11 +78,7 @@
     transition: all 0.3s ease-in-out !important;
 }
 
-.input-glass::placeholder,
-.select-glass::placeholder {
-    color: rgba(255, 255, 255, 0.6) !important;
-    font-style: italic !important;
-}
+
 
 .card-glass:focus {
     outline: none !important;
