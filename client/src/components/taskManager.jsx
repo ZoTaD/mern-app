@@ -22,7 +22,6 @@ function TaskManager() {
         return new Date(dateString).toLocaleDateString('es-ES', options);
     };
 
-    // Crear tarea
     const handleCreateTask = (e) => {
         e.preventDefault();
         const taskToCreate = {
@@ -33,7 +32,6 @@ function TaskManager() {
         setNewTask({ title: '', description: '', status: 'Pendiente' });
     };
 
-    // Actualizar tarea
     const handleUpdateTask = async (e) => {
         e.preventDefault();
         const updatedTask = { ...newTask };
@@ -42,7 +40,6 @@ function TaskManager() {
         setNewTask({ title: '', description: '', status: 'Pendiente' });
     };
 
-    // Borrar tarea
     const handleDeleteTask = (id) => {
         Swal.fire({
             title: '¿Estás seguro?',
@@ -61,13 +58,11 @@ function TaskManager() {
         });
     };
 
-    // Editar tarea
     const handleEditClick = (task) => {
         setEditingTask(task);
         setNewTask({ title: task.title, description: task.description, status: task.status });
     };
 
-    // Arrastrar y soltar tarea
     const handleDragEnd = (result) => {
         const { source, destination } = result;
 
@@ -76,15 +71,11 @@ function TaskManager() {
         if (source.droppableId !== destination.droppableId) {
             const task = groupedTasks[source.droppableId][source.index];
 
-            // Actualiza el estado local inmediatamente
-            dispatch(updateTask.fulfilled({ ...task, status: destination.droppableId }));
-
-            // Luego actualiza en el backend
+            // Realizar la actualización en el backend directamente
             dispatch(updateTask({ id: task._id, data: { ...task, status: destination.droppableId } }));
         }
     };
 
-    // Agrupar tareas por estado
     const groupedTasks = {
         Pendiente: tasks.filter((task) => task.status === 'Pendiente'),
         'En Progreso': tasks.filter((task) => task.status === 'En Progreso'),
@@ -179,9 +170,6 @@ function TaskManager() {
                                                             {...provided.draggableProps}
                                                             {...provided.dragHandleProps}
                                                             className={`mb-3 ${styles['card-glass']}`}
-                                                            style={{
-                                                                cursor: 'grab',
-                                                            }}
                                                         >
                                                             <Card.Body>
                                                                 <div className="d-flex justify-content-between align-items-center mb-3">
