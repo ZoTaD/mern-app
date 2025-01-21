@@ -58,4 +58,8 @@
     background: rgba(255, 255, 255, 0.4) !important; /* Fondo más opaco en hover */
     color: black !important; /* Texto oscuro en hover */
   }
+
+  .text-white-important {
+    color: white !important;
+  }
   
