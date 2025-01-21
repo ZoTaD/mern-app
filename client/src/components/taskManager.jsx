@@ -18,10 +18,10 @@ function TaskManager() {
         dispatch(fetchTasks());
     }, [dispatch]);
 
-    const formatDate = (dateString) => {
-        const options = { day: '2-digit', month: '2-digit', year: '2-digit' };
-        return new Date(dateString).toLocaleDateString('es-ES', options); // Formato DD/MM/AA
-    };
+    // const formatDate = (dateString) => {
+    //     const options = { day: '2-digit', month: '2-digit', year: '2-digit' };
+    //     return new Date(dateString).toLocaleDateString('es-ES', options); 
+    // };
 
     // Crear
     const handleCreateTask = (e) => {
@@ -228,9 +228,6 @@ function TaskManager() {
             </Container>
         </DragDropContext>
     );
-
-
-
 }
 
 export default TaskManager;
