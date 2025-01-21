@@ -32,6 +32,22 @@
 
 /* TaskManager.module.css */
 
+.select-glass {
+    background: rgba(255, 255, 255, 0.2) !important;
+    backdrop-filter: blur(5px) !important;
+    -webkit-backdrop-filter: blur(5px) !important;
+    color: white !important;
+    border: 1px solid rgba(255, 255, 255, 0.4) !important;
+    padding: 0.5rem !important;
+    border-radius: 5px !important;
+    transition: box-shadow 0.3s ease !important;
+}
+
+.select-glass:focus {
+    outline: none !important;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5) !important;
+}
+
 .card-glass {
     background: rgba(255, 255, 255, 0.15) !important;
     backdrop-filter: blur(10px) !important;
@@ -41,6 +57,24 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2) !important;
     padding: 1rem !important;
     border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    cursor: not-allowed !important;
+}
+
+.card-glass:hover {
+    box-shadow: 0 6px 8px rgba(255, 255, 255, 0.4) !important;
+    border-color: rgba(255, 255, 255, 0.5) !important;
+    transition: all 0.3s ease-in-out !important;
+}
+
+.input-glass::placeholder,
+.select-glass::placeholder {
+    color: rgba(255, 255, 255, 0.6) !important;
+    font-style: italic !important;
+}
+
+.card-glass:focus {
+    outline: none !important;
+    border-color: rgba(255, 255, 255, 0.6) !important;
 }
 
 .button-glass {

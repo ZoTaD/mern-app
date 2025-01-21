@@ -5,7 +5,6 @@ import { Card, Form, Button, Container, Row, Col } from 'react-bootstrap';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import styles from '../styles/TaskManager.module.css';
 import Swal from 'sweetalert2';
-// import { data } from 'react-router-dom';
 
 function TaskManager() {
     const dispatch = useDispatch();
@@ -38,11 +37,7 @@ function TaskManager() {
     const handleUpdateTask = async (e) => {
         e.preventDefault();
 
-        // Creo un objeto con los datos actualizados
-        const updatedTask = {
-            ...newTask, // Incluir title, description y status
-        };
-
+        const updatedTask = { ...newTask }; // Incluir title, description y status
         await dispatch(updateTask({ id: editingTask._id, data: updatedTask }));
         setEditingTask(null);
         setNewTask({ title: '', description: '', status: 'Pendiente' });
@@ -70,7 +65,7 @@ function TaskManager() {
     // Editar
     const handleEditClick = (task) => {
         setEditingTask(task);
-        setNewTask({ title: task.title, description: task.description, status: task.status, });
+        setNewTask({ title: task.title, description: task.description, status: task.status });
     };
 
     const handleDragEnd = (result) => {
@@ -80,21 +75,10 @@ function TaskManager() {
 
         if (source.droppableId !== destination.droppableId) {
             const task = groupedTasks[source.droppableId][source.index];
-
-            // Actualizar el estado local
-            const updatedTask = {
-                ...task,
-                status: destination.droppableId,
-            };
-
-            // Actualizar el estado de Redux localmente
-            dispatch(updateTask.fulfilled(updatedTask));
-
-            // Enviar la actualización al backend
+            const updatedTask = { ...task, status: destination.droppableId };
             dispatch(updateTask({ id: task._id, data: updatedTask }));
         }
     };
-
 
     // Agrupar tareas por su estado
     const groupedTasks = {
@@ -102,7 +86,6 @@ function TaskManager() {
         'En Progreso': tasks.filter((task) => task.status === 'En Progreso'),
         Completada: tasks.filter((task) => task.status === 'Completada'),
     };
-
 
     return (
         <DragDropContext onDragEnd={handleDragEnd}>
@@ -118,7 +101,7 @@ function TaskManager() {
                                         placeholder="Título"
                                         value={newTask.title}
                                         onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
-                                        className="mb-2"
+                                        className={styles['input-glass']} // Estilo de vidrio para el input
                                     />
                                 </Col>
                                 <Col md={3}>
@@ -127,14 +110,14 @@ function TaskManager() {
                                         placeholder="Descripción"
                                         value={newTask.description}
                                         onChange={(e) => setNewTask({ ...newTask, description: e.target.value })}
-                                        className="mb-2"
+                                        className={styles['input-glass']} // Estilo de vidrio para el input
                                     />
                                 </Col>
                                 <Col md={3}>
                                     <Form.Select
                                         value={newTask.status}
                                         onChange={(e) => setNewTask({ ...newTask, status: e.target.value })}
-                                        className="mb-2"
+                                        className={styles['select-glass']} // Estilo de vidrio para el select
                                     >
                                         <option value="Pendiente">Pendiente</option>
                                         <option value="En Progreso">En Progreso</option>
@@ -142,14 +125,16 @@ function TaskManager() {
                                     </Form.Select>
                                 </Col>
                                 <Col md="auto">
-                                    <Button type="submit" variant="primary" className="mb-2">
+                                    <Button
+                                        type="submit"
+                                        className={`mb-2 ${styles['button-glass']}`} // Estilo de vidrio para el botón
+                                    >
                                         {editingTask ? 'Actualizar' : 'Agregar'}
                                     </Button>
                                     {editingTask && (
                                         <Button
-                                            variant="secondary"
                                             onClick={() => setEditingTask(null)}
-                                            className="mb-2 ms-2"
+                                            className={`mb-2 ms-2 ${styles['button-glass']}`} // Estilo de vidrio para el botón
                                         >
                                             Cancelar
                                         </Button>
@@ -159,7 +144,7 @@ function TaskManager() {
                         </Form>
                     </Col>
                 </Row>
-                <Row className={styles['no-wrap-row']} >
+                <Row className={styles['no-wrap-row']}>
                     {['Pendiente', 'En Progreso', 'Completada'].map((status) => (
                         <Col
                             md={4}
@@ -168,8 +153,8 @@ function TaskManager() {
                                 status === 'Pendiente'
                                     ? styles['pending-column']
                                     : status === 'En Progreso'
-                                        ? styles['in-progress-column']
-                                        : styles['completed-column']
+                                    ? styles['in-progress-column']
+                                    : styles['completed-column']
                             }
                         >
                             <div className={styles['droppable-column']}>
@@ -197,23 +182,29 @@ function TaskManager() {
                                                             <Card.Body>
                                                                 <div className="d-flex justify-content-between align-items-center mb-3">
                                                                     <div style={{ display: 'flex', gap: '42px' }}>
-                                                                        <h6 className=" text-white-important">#{index + 1}</h6>
+                                                                        <h6 className={styles['text-white-important']}>
+                                                                            #{index + 1}
+                                                                        </h6>
                                                                         <h5>{task.title}</h5>
                                                                     </div>
                                                                 </div>
-                                                                <p>{task.description}</p>
-                                                                <small className=" text-white-important">Creado el: {formatDate(task.createdAt)}</small>
+                                                                <p className={styles['text-white-important']}>
+                                                                    {task.description}
+                                                                </p>
+                                                                <small className={styles['text-white-important']}>
+                                                                    Creado el: {formatDate(task.createdAt)}
+                                                                </small>
                                                             </Card.Body>
                                                             <Card.Footer className="d-flex justify-content-between">
                                                                 <Button
-                                                                    className={styles['button-glass']} // Aplica la clase de vidrio a los botones
+                                                                    className={styles['button-glass']} // Estilo de vidrio para el botón
                                                                     size="sm"
                                                                     onClick={() => handleEditClick(task)}
                                                                 >
                                                                     Editar
                                                                 </Button>
                                                                 <Button
-                                                                    className={styles['button-glass']} // Aplica la clase de vidrio a los botones
+                                                                    className={styles['button-glass']} // Estilo de vidrio para el botón
                                                                     size="sm"
                                                                     onClick={() => handleDeleteTask(task._id)}
                                                                 >
@@ -221,7 +212,6 @@ function TaskManager() {
                                                                 </Button>
                                                             </Card.Footer>
                                                         </Card>
-
                                                     )}
                                                 </Draggable>
                                             ))}
@@ -236,9 +226,6 @@ function TaskManager() {
             </Container>
         </DragDropContext>
     );
-
-
-
 }
 
 export default TaskManager;
