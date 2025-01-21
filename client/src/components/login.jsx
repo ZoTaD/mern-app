@@ -7,9 +7,9 @@ import { Form, Button, Card, Container, Row, Col } from 'react-bootstrap';
 function Login({ onSwitchToRegister }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [localError , setLocalError] = useState(null);
+    const [localError, setLocalError] = useState(null); // Estado local para manejar errores
     const dispatch = useDispatch();
-    const { loading, error } = useSelector((state) => state.auth);
+    const { loading, error } = useSelector((state) => state.auth); // Error global del slice
     const navigate = useNavigate();
     const location = useLocation();
     const successMessage = location.state?.successMessage;
@@ -21,14 +21,13 @@ function Login({ onSwitchToRegister }) {
         dispatch(login({ email, password })).then((result) => {
             if (result.meta.requestStatus === 'fulfilled') {
                 console.log('Resultado del login:', result);
-                setLocalError(null);
-                navigate('/home');
+                setLocalError(null); // Limpiar cualquier error previo
+                navigate('/home'); // Solo navegar si el login es exitoso
             } else {
                 console.error('Error en login:', result.payload || 'Error desconocido');
-                setLocalError('Usuario o contraseña incorrectos');
+                setLocalError('Usuario o contraseña incorrectos'); // Establecer error local
             }
         });
-
     };
 
     return (
@@ -40,11 +39,11 @@ function Login({ onSwitchToRegister }) {
                             <Card.Body>
                                 <Card.Title className="text-center mb-4">Iniciar sesión</Card.Title>
 
-                                {/* Mostrar mensaje de éxito solo si existe */}
+                                {/* Mostrar mensaje de éxito si existe */}
                                 {successMessage && <p className="text-success">{successMessage}</p>}
 
-                                {/* Mostrar mensaje de error solo si no hay mensaje de éxito */}
-                                {!successMessage && error && <p className="text-danger">{error}</p>}
+                                {/* Mostrar error local si falla el login */}
+                                {localError && <p className="text-danger">{localError}</p>}
 
                                 <Form onSubmit={handleSubmit}>
                                     <Form.Group controlId="email" className="mb-3">
@@ -54,6 +53,7 @@ function Login({ onSwitchToRegister }) {
                                             placeholder="Ingresa tu email"
                                             value={email}
                                             onChange={(e) => setEmail(e.target.value)}
+                                            isInvalid={!!localError} // Indicar error en el input
                                         />
                                     </Form.Group>
                                     <Form.Group controlId="password" className="mb-3">
@@ -63,6 +63,7 @@ function Login({ onSwitchToRegister }) {
                                             placeholder="Ingresa tu contraseña"
                                             value={password}
                                             onChange={(e) => setPassword(e.target.value)}
+                                            isInvalid={!!localError} // Indicar error en el input
                                         />
                                     </Form.Group>
                                     <Button
