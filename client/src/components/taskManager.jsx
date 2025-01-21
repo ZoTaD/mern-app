@@ -196,7 +196,10 @@ function TaskManager() {
                                                         >
                                                             <Card.Body>
                                                                 <div className="d-flex justify-content-between align-items-center mb-3">
-                                                                    <div>
+                                                                    <div style={{
+                                                                        display: 'flex',
+                                                                        gap: '42px',
+                                                                    }}>
                                                                         <h6 className="text-muted">#{index + 1}</h6>
                                                                         <h5>{task.title}</h5>
                                                                     </div>
