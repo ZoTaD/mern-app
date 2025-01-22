@@ -125,4 +125,9 @@
     color: white !important;
 }
 
+.input-glass::placeholder {
+    color: white !important; /* Cambia el color del placeholder */
+    opacity: 1; /* Asegúrate de que sea completamente visible */
+}
+
   

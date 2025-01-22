@@ -227,5 +227,6 @@ Se configuraron pruebas unitarias para todas las funciones principales usando **
 - **Autenticación**: Validación de tokens y middleware.
 - **CRUD de Tareas**: Pruebas de endpoints y acciones de Redux.
 - **Frontend**: Simulación de interacciones del usuario y validación del estado global.
-
-
+- Ejcutar los test haciendo:
+1. cd client / cd server
+2. node --max-old-space-size=4096 node_modules/.bin/jest
