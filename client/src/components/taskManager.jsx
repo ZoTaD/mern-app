@@ -82,23 +82,21 @@ function TaskManager() {
         const sourceIndex = source.index;
         const destinationIndex = destination.index;
 
-        // Copiar tareas actuales agrupadas
-        const sourceTasks = [...groupedTasks[sourceColumn]];
+        const sourceTasks = [...groupedTasks[sourceColumn]]; // Copia de las tareas de origen
         const destinationTasks =
             sourceColumn === destinationColumn
                 ? sourceTasks
-                : [...groupedTasks[destinationColumn]];
+                : [...groupedTasks[destinationColumn]]; // Copia de las tareas de destino
 
-        // Tarea que se mueve
-        const [movedTask] = sourceTasks.splice(sourceIndex, 1);
+        const [movedTask] = sourceTasks.splice(sourceIndex, 1); // Eliminar tarea del origen
 
-        // Actualizar su posición y/o columna
         const updatedTask = {
             ...movedTask,
             status: destinationColumn,
             order: destinationIndex,
         };
 
+        // Insertar la tarea en la posición correcta en la nueva columna
         destinationTasks.splice(destinationIndex, 0, updatedTask);
 
         // Actualizar el estado local
@@ -112,7 +110,7 @@ function TaskManager() {
             },
         });
 
-        // Enviar una sola solicitud al backend para la tarea movida
+        // Enviar solo la tarea movida al backend
         dispatch(
             updateTaskPosition({
                 id: updatedTask._id,

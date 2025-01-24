@@ -118,6 +118,16 @@ const taskSlice = createSlice({
                 }
                 return task;
             });
+
+            // Reordeno las tareas después del movimiento
+            if (sourceColumn !== destinationColumn) {
+                state.tasks = state.tasks
+                    .filter((task) => task.status === destinationColumn)
+                    .sort((a, b) => a.order - b.order)
+                    .concat(
+                        state.tasks.filter((task) => task.status !== destinationColumn)
+                    );
+            }
         },
     },
     extraReducers: (builder) => {
