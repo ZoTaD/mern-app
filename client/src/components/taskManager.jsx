@@ -82,24 +82,27 @@ function TaskManager() {
         const sourceIndex = source.index;
         const destinationIndex = destination.index;
 
-        const sourceTasks = [...groupedTasks[sourceColumn]]; // Copia de las tareas de origen
+        // Copias inmutables de las tareas
+        const sourceTasks = [...groupedTasks[sourceColumn]];
         const destinationTasks =
             sourceColumn === destinationColumn
                 ? sourceTasks
-                : [...groupedTasks[destinationColumn]]; // Copia de las tareas de destino
+                : [...groupedTasks[destinationColumn]];
 
-        const [movedTask] = sourceTasks.splice(sourceIndex, 1); // Eliminar tarea del origen
+        // Remover la tarea del origen
+        const [movedTask] = sourceTasks.splice(sourceIndex, 1);
 
+        // Actualizar su estado y posición
         const updatedTask = {
             ...movedTask,
             status: destinationColumn,
             order: destinationIndex,
         };
 
-        // Insertar la tarea en la posición correcta en la nueva columna
+        // Insertar la tarea en la posición correcta en el destino
         destinationTasks.splice(destinationIndex, 0, updatedTask);
 
-        // Actualizar el estado local
+        // Actualización local optimista
         dispatch({
             type: 'tasks/updateLocalMove',
             payload: {
@@ -110,14 +113,19 @@ function TaskManager() {
             },
         });
 
-        // Enviar solo la tarea movida al backend
+        // Confirmar actualización con el backend
         dispatch(
             updateTaskPosition({
                 id: updatedTask._id,
                 status: updatedTask.status,
                 order: destinationIndex,
             })
-        );
+        ).catch((error) => {
+            console.error('Error al actualizar en el backend:', error);
+
+            // Revertir cambios si el backend falla
+            dispatch(fetchTasks());
+        });
     };
 
     // Agrupar tareas por su estado

@@ -109,6 +109,7 @@ const taskSlice = createSlice({
         updateLocalMove: (state, action) => {
             const { sourceTasks, destinationTasks, sourceColumn, destinationColumn } = action.payload;
 
+            // Actualizamos las tareas del origen y el destino
             state.tasks = state.tasks.map((task) => {
                 if (task.status === sourceColumn) {
                     return sourceTasks.find((t) => t._id === task._id) || task;
@@ -118,16 +119,6 @@ const taskSlice = createSlice({
                 }
                 return task;
             });
-
-            // Reordeno las tareas después del movimiento
-            if (sourceColumn !== destinationColumn) {
-                state.tasks = state.tasks
-                    .filter((task) => task.status === destinationColumn)
-                    .sort((a, b) => a.order - b.order)
-                    .concat(
-                        state.tasks.filter((task) => task.status !== destinationColumn)
-                    );
-            }
         },
     },
     extraReducers: (builder) => {
