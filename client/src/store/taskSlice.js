@@ -38,13 +38,19 @@ export const updateTask = createAsyncThunk(
     'tasks/updateTask',
     async ({ id, data }, { rejectWithValue }) => {
         try {
+            // Obtener el token del almacenamiento local
             const token = localStorage.getItem('token');
             if (!token) throw new Error('Token no disponible');
+
+            // Realizar la solicitud al backend
             const response = await axios.put(`${API_URL}/api/tasks/${id}`, data, {
                 headers: { Authorization: `Bearer ${token}` },
             });
+
+            // Devolver la tarea actualizada del backend
             return response.data;
         } catch (error) {
+            // Manejar errores y devolver un mensaje claro
             const errorMessage =
                 error.response?.data?.message || error.message || 'Error al actualizar la tarea';
             return rejectWithValue(errorMessage);
@@ -52,24 +58,6 @@ export const updateTask = createAsyncThunk(
     }
 );
 
-// Actualizar posición y columna de una tarea
-export const updateTaskPosition = createAsyncThunk(
-    'tasks/updateTaskPosition',
-    async ({ id, status, order }, { rejectWithValue }) => {
-        try {
-            const token = localStorage.getItem('token');
-            if (!token) throw new Error('Token no disponible');
-            const response = await axios.put(`${API_URL}/api/tasks/${id}/position`, { status, order }, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
-            return response.data;
-        } catch (error) {
-            const errorMessage =
-                error.response?.data?.message || 'Error al actualizar la posición de la tarea';
-            return rejectWithValue(errorMessage);
-        }
-    }
-);
 
 // Eliminar una tarea
 export const deleteTask = createAsyncThunk('tasks/deleteTask', async (id, { rejectWithValue }) => {
@@ -89,40 +77,8 @@ export const deleteTask = createAsyncThunk('tasks/deleteTask', async (id, { reje
 // Configuración del slice
 const taskSlice = createSlice({
     name: 'tasks',
-    initialState: {
-        columns: {
-            Pendiente: [],
-            'En Progreso': [],
-            Completada: [],
-        },
-        loading: false,
-        error: null,
-    },
-    reducers: {
-        updateColumns: (state, action) => {
-            state.columns = action.payload;
-        },
-        updateLocalOrder: (state, action) => {
-            const { tasks, status } = action.payload;
-            state.tasks = state.tasks.map((task) =>
-                task.status === status ? tasks.find((t) => t._id === task._id) || task : task
-            );
-        },
-        updateLocalMove: (state, action) => {
-            const { sourceTasks, destinationTasks, sourceColumn, destinationColumn } = action.payload;
-
-            // Actualizamos las tareas del origen y el destino
-            state.tasks = state.tasks.map((task) => {
-                if (task.status === sourceColumn) {
-                    return sourceTasks.find((t) => t._id === task._id) || task;
-                }
-                if (task.status === destinationColumn) {
-                    return destinationTasks.find((t) => t._id === task._id) || task;
-                }
-                return task;
-            });
-        },
-    },
+    initialState: { tasks: [], loading: false, error: null },
+    reducers: {},
     extraReducers: (builder) => {
         builder
             .addCase(fetchTasks.pending, (state) => {
@@ -131,66 +87,27 @@ const taskSlice = createSlice({
             })
             .addCase(fetchTasks.fulfilled, (state, action) => {
                 state.loading = false;
-
-                // Agrupar tareas por columna
-                const columns = {
-                    Pendiente: [],
-                    'En Progreso': [],
-                    Completada: [],
-                };
-
-                action.payload.forEach((task) => {
-                    if (columns[task.status]) {
-                        columns[task.status].push(task);
-                    }
-                });
-
-                state.columns = columns; // Actualizar columnas
-                state.error = null;
+                state.tasks = action.payload;
             })
             .addCase(fetchTasks.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
             })
             .addCase(createTask.fulfilled, (state, action) => {
-                const task = action.payload;
-                if (state.columns[task.status]) {
-                    state.columns[task.status].push(task);
-                }
+                state.tasks.push(action.payload);
             })
             .addCase(updateTask.fulfilled, (state, action) => {
                 const updatedTask = action.payload;
+                const index = state.tasks.findIndex((task) => task._id === updatedTask._id);
 
-                // Actualizar tarea en su columna correspondiente
-                Object.keys(state.columns).forEach((column) => {
-                    state.columns[column] = state.columns[column].map((task) =>
-                        task._id === updatedTask._id ? updatedTask : task
-                    );
-                });
-            })
-            .addCase(updateTaskPosition.fulfilled, (state, action) => {
-                const updatedTask = action.payload;
-
-                // Remover tarea de la columna anterior
-                Object.keys(state.columns).forEach((column) => {
-                    state.columns[column] = state.columns[column].filter(
-                        (task) => task._id !== updatedTask._id
-                    );
-                });
-
-                // Agregar tarea a la nueva columna con posición actualizada
-                if (state.columns[updatedTask.status]) {
-                    state.columns[updatedTask.status].splice(updatedTask.order, 0, updatedTask);
+                if (index !== -1) {
+                    state.tasks[index] = updatedTask; // Actualizar solo la tarea modificada
                 }
             })
             .addCase(deleteTask.fulfilled, (state, action) => {
-                const taskId = action.payload;
-                Object.keys(state.columns).forEach((column) => {
-                    state.columns[column] = state.columns[column].filter((task) => task._id !== taskId);
-                });
+                state.tasks = state.tasks.filter((task) => task._id !== action.payload);
             });
     },
 });
 
-export const { updateColumns, updateLocalOrder, updateLocalMove } = taskSlice.actions;
 export default taskSlice.reducer;

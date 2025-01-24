@@ -1,29 +1,53 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchTasks, createTask, deleteTask, updateTaskPosition } from '../store/taskSlice';
+import { fetchTasks, createTask, updateTask, deleteTask } from '../store/taskSlice';
 import { Card, Form, Button, Container, Row, Col } from 'react-bootstrap';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import Swal from 'sweetalert2';
 import styles from '../styles/TaskManager.module.css';
+import Swal from 'sweetalert2';
 
 function TaskManager() {
     const dispatch = useDispatch();
-    const columns = useSelector((state) => state.tasks.columns); // Usar columnas directamente del estado
+    const { tasks } = useSelector((state) => state.tasks);
 
-    const [newTask, setNewTask] = useState({ title: '', description: '', status: 'Pendiente' });
+    const [newTask, setNewTask] = useState({ title: '', description: '' });
+    const [editingTask, setEditingTask] = useState(null);
 
     useEffect(() => {
         dispatch(fetchTasks());
     }, [dispatch]);
 
-    // Crear nueva tarea
+    const formatDate = (dateString) => {
+        const options = { day: '2-digit', month: '2-digit', year: '2-digit' };
+        return new Date(dateString).toLocaleDateString('es-ES', options); // Formato DD/MM/AA
+    };
+
+    // Crear
     const handleCreateTask = (e) => {
         e.preventDefault();
-        dispatch(createTask(newTask));
+        const taskToCreate = {
+            ...newTask,
+            status: newTask.status || 'Pendiente', // Si no se especifica, usar 'Pendiente'
+        };
+        dispatch(createTask(taskToCreate));
         setNewTask({ title: '', description: '', status: 'Pendiente' });
     };
 
-    // Eliminar tarea
+    // Actualizar
+    const handleUpdateTask = async (e) => {
+        e.preventDefault();
+
+        // Creo un objeto con los datos actualizados
+        const updatedTask = {
+            ...newTask, // Incluir title, description y status
+        };
+
+        await dispatch(updateTask({ id: editingTask._id, data: updatedTask }));
+        setEditingTask(null);
+        setNewTask({ title: '', description: '', status: 'Pendiente' });
+    };
+
+    // Borrar
     const handleDeleteTask = (id) => {
         Swal.fire({
             title: '¿Estás seguro?',
@@ -42,123 +66,168 @@ function TaskManager() {
         });
     };
 
-    // Arrastrar y soltar tareas
+    // Editar
+    const handleEditClick = (task) => {
+        setEditingTask(task);
+        setNewTask({ title: task.title, description: task.description, status: task.status, });
+    };
+
     const handleDragEnd = (result) => {
         const { source, destination } = result;
+
         if (!destination) return;
 
-        const sourceColumn = source.droppableId;
-        const destinationColumn = destination.droppableId;
-        const sourceIndex = source.index;
-        const destinationIndex = destination.index;
+        if (source.droppableId !== destination.droppableId) {
+            const task = groupedTasks[source.droppableId][source.index];
 
-        const sourceTasks = [...columns[sourceColumn]];
-        const destinationTasks =
-            sourceColumn === destinationColumn
-                ? sourceTasks
-                : [...columns[destinationColumn]];
+            // Actualizar el estado local
+            const updatedTask = {
+                ...task,
+                status: destination.droppableId,
+            };
 
-        const [movedTask] = sourceTasks.splice(sourceIndex, 1);
-        movedTask.status = destinationColumn; // Cambiar el estado
-        destinationTasks.splice(destinationIndex, 0, movedTask);
+            // Actualizar el estado de Redux localmente
+            dispatch(updateTask.fulfilled(updatedTask));
 
-        // Actualizar órdenes locales
-        sourceTasks.forEach((task, index) => (task.order = index));
-        destinationTasks.forEach((task, index) => (task.order = index));
+            // Enviar la actualización al backend
+            dispatch(updateTask({ id: task._id, data: updatedTask }));
+        }
+    };
 
-        // Actualizar estado local
-        dispatch({
-            type: 'tasks/updateColumns',
-            payload: {
-                ...columns,
-                [sourceColumn]: sourceTasks,
-                [destinationColumn]: destinationTasks,
-            },
-        });
-
-        // Actualizar en el backend
-        dispatch(
-            updateTaskPosition({
-                id: movedTask._id,
-                status: destinationColumn,
-                order: destinationIndex,
-            })
-        ).catch((error) => {
-            console.error('Error al actualizar en el backend:', error);
-            dispatch(fetchTasks()); // Revertir cambios si el backend falla
-        });
+    // Agrupar tareas por su estado
+    const groupedTasks = {
+        Pendiente: tasks.filter((task) => task.status === 'Pendiente'),
+        'En Progreso': tasks.filter((task) => task.status === 'En Progreso'),
+        Completada: tasks.filter((task) => task.status === 'Completada'),
     };
 
     return (
         <DragDropContext onDragEnd={handleDragEnd}>
             <Container>
-                <Row className="mb-4">
+                <Row>
                     <Col>
-                        <h2>Gestión de Tareas</h2>
-                        <Form onSubmit={handleCreateTask}>
+                        <h2 className="text-center mb-4">Gestión de tareas</h2>
+                        <Form onSubmit={editingTask ? handleUpdateTask : handleCreateTask}>
                             <Row>
-                                <Col md={4}>
+                                <Col md={3}>
                                     <Form.Control
                                         type="text"
                                         placeholder="Título"
                                         value={newTask.title}
                                         onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
+                                        className={`${styles['input-glass']} mb-2`} // Aplicando estilo de vidrio
                                     />
                                 </Col>
-                                <Col md={4}>
+                                <Col md={3}>
                                     <Form.Control
                                         type="text"
                                         placeholder="Descripción"
                                         value={newTask.description}
                                         onChange={(e) => setNewTask({ ...newTask, description: e.target.value })}
+                                        className={`${styles['input-glass']} mb-2`} // Aplicando estilo de vidrio
                                     />
                                 </Col>
-                                <Col md={4}>
-                                    <Button type="submit">Agregar Tarea</Button>
+                                <Col md={3}>
+                                    <Form.Select
+                                        value={newTask.status}
+                                        onChange={(e) => setNewTask({ ...newTask, status: e.target.value })}
+                                        className={`${styles['select-glass']} mb-2`} // Aplicando estilo de vidrio
+                                    >
+                                        <option value="Pendiente">Pendiente</option>
+                                        <option value="En Progreso">En Progreso</option>
+                                        <option value="Completada">Completada</option>
+                                    </Form.Select>
+                                </Col>
+                                <Col md="auto">
+                                    <Button
+                                        type="submit"
+                                        className={`${styles['button-glass']} mb-2`} // Aplicando estilo de vidrio
+                                    >
+                                        {editingTask ? 'Actualizar' : 'Agregar'}
+                                    </Button>
+                                    {editingTask && (
+                                        <Button
+                                            onClick={() => setEditingTask(null)}
+                                            className={`${styles['button-glass']} mb-2 ms-2`} // Aplicando estilo de vidrio
+                                        >
+                                            Cancelar
+                                        </Button>
+                                    )}
                                 </Col>
                             </Row>
                         </Form>
                     </Col>
                 </Row>
-                <Row>
-                    {Object.keys(columns).map((column) => (
-                        <Col key={column} md={4}>
-                            <h3>{column}</h3>
-                            <Droppable droppableId={column}>
-                                {(provided) => (
-                                    <div
-                                        {...provided.droppableProps}
-                                        ref={provided.innerRef}
-                                        className={styles['droppable-column']}
-                                    >
-                                        {columns[column].map((task, index) => (
-                                            <Draggable key={task._id} draggableId={task._id} index={index}>
-                                                {(provided) => (
-                                                    <Card
-                                                        ref={provided.innerRef}
-                                                        {...provided.draggableProps}
-                                                        {...provided.dragHandleProps}
-                                                        className={styles['card-glass']}
-                                                    >
-                                                        <Card.Body>
-                                                            <h5>{task.title}</h5>
-                                                            <p>{task.description}</p>
-                                                            <Button
-                                                                variant="danger"
-                                                                onClick={() => handleDeleteTask(task._id)}
-                                                                className="mt-2"
-                                                            >
-                                                                Eliminar
-                                                            </Button>
-                                                        </Card.Body>
-                                                    </Card>
-                                                )}
-                                            </Draggable>
-                                        ))}
-                                        {provided.placeholder}
-                                    </div>
-                                )}
-                            </Droppable>
+                <Row className={styles['no-wrap-row']} >
+                    {['Pendiente', 'En Progreso', 'Completada'].map((status) => (
+                        <Col
+                            md={4}
+                            key={status}
+                            className={
+                                status === 'Pendiente'
+                                    ? styles['pending-column']
+                                    : status === 'En Progreso'
+                                        ? styles['in-progress-column']
+                                        : styles['completed-column']
+                            }
+                        >
+                            <div className={styles['droppable-column']}>
+                                <h3 className="text-center">{status}</h3>
+                                <Droppable droppableId={status}>
+                                    {(provided) => (
+                                        <div
+                                            {...provided.droppableProps}
+                                            ref={provided.innerRef}
+                                            style={{
+                                                minHeight: '200px',
+                                                height: '100%',
+                                                borderRadius: '5px',
+                                            }}
+                                        >
+                                            {groupedTasks[status].map((task, index) => (
+                                                <Draggable key={task._id} draggableId={task._id} index={index}>
+                                                    {(provided) => (
+                                                        <Card
+                                                            ref={provided.innerRef}
+                                                            {...provided.draggableProps}
+                                                            {...provided.dragHandleProps}
+                                                            className={`mb-3 ${styles['card-glass']}`}
+                                                        >
+                                                            <Card.Body>
+                                                                <div className="d-flex justify-content-between align-items-center mb-3">
+                                                                    <div style={{ display: 'flex', gap: '42px' }}>
+                                                                        <h6 className=" text-white-important">#{index + 1}</h6>
+                                                                        <h5>{task.title}</h5>
+                                                                    </div>
+                                                                </div>
+                                                                <p>{task.description}</p>
+                                                                <small className=" text-white-important">Creado el: {formatDate(task.createdAt)}</small>
+                                                            </Card.Body>
+                                                            <Card.Footer className="d-flex justify-content-between">
+                                                                <Button
+                                                                    className={styles['button-glass']}
+                                                                    size="sm"
+                                                                    onClick={() => handleEditClick(task)}
+                                                                >
+                                                                    Editar
+                                                                </Button>
+                                                                <Button
+                                                                    className={styles['button-glass']}
+                                                                    size="sm"
+                                                                    onClick={() => handleDeleteTask(task._id)}
+                                                                >
+                                                                    Eliminar
+                                                                </Button>
+                                                            </Card.Footer>
+                                                        </Card>
+                                                    )}
+                                                </Draggable>
+                                            ))}
+                                            {provided.placeholder}
+                                        </div>
+                                    )}
+                                </Droppable>
+                            </div>
                         </Col>
                     ))}
                 </Row>
