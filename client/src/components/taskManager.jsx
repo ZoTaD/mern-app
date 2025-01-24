@@ -77,28 +77,53 @@ function TaskManager() {
 
         if (!destination) return;
 
-        if (source.droppableId !== destination.droppableId) {
-            const task = groupedTasks[source.droppableId][source.index];
+        const sourceColumn = source.droppableId;
+        const destinationColumn = destination.droppableId;
+        const sourceIndex = source.index;
+        const destinationIndex = destination.index;
 
-            // Actualizar el estado local
-            const updatedTask = {
-                ...task,
-                status: destination.droppableId,
-            };
+        if (sourceColumn === destinationColumn) {
+            // Cambiar posición dentro de la misma columna
+            const columnTasks = [...groupedTasks[sourceColumn]];
+            const [movedTask] = columnTasks.splice(sourceIndex, 1);
+            columnTasks.splice(destinationIndex, 0, movedTask);
 
-            // Actualizar el estado de Redux localmente
-            dispatch(updateTask.fulfilled(updatedTask));
+            // Actualizar el orden localmente
+            columnTasks.forEach((task, index) => {
+                task.order = index;
+                dispatch(updateTaskPosition({ id: task._id, status: task.status, order: task.order }));
+            });
+        } else {
+            // Mover tarea a otra columna
+            const sourceTasks = [...groupedTasks[sourceColumn]];
+            const destinationTasks = [...groupedTasks[destinationColumn]];
+            const [movedTask] = sourceTasks.splice(sourceIndex, 1);
 
-            // Enviar la actualización al backend
-            dispatch(updateTask({ id: task._id, data: updatedTask }));
+            movedTask.status = destinationColumn;
+            destinationTasks.splice(destinationIndex, 0, movedTask);
+
+            // Actualizar el orden localmente
+            sourceTasks.forEach((task, index) => {
+                task.order = index;
+                dispatch(updateTaskPosition({ id: task._id, status: task.status, order: task.order }));
+            });
+
+            destinationTasks.forEach((task, index) => {
+                task.order = index;
+                dispatch(updateTaskPosition({ id: task._id, status: task.status, order: task.order }));
+            });
         }
     };
 
     // Agrupar tareas por su estado
     const groupedTasks = {
-        Pendiente: tasks.filter((task) => task.status === 'Pendiente'),
-        'En Progreso': tasks.filter((task) => task.status === 'En Progreso'),
-        Completada: tasks.filter((task) => task.status === 'Completada'),
+        Pendiente: tasks.filter((task) => task.status === 'Pendiente').sort((a, b) => a.order - b.order),
+        'En Progreso': tasks
+            .filter((task) => task.status === 'En Progreso')
+            .sort((a, b) => a.order - b.order),
+        Completada: tasks
+            .filter((task) => task.status === 'Completada')
+            .sort((a, b) => a.order - b.order),
     };
 
     return (

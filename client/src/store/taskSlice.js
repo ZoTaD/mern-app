@@ -58,6 +58,27 @@ export const updateTask = createAsyncThunk(
     }
 );
 
+// Actualizar posición y columna de una tarea
+export const updateTaskPosition = createAsyncThunk(
+    'tasks/updateTaskPosition',
+    async ({ id, status, order }, { rejectWithValue }) => {
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) throw new Error('Token no disponible');
+
+            const response = await axios.put(`${API_URL}/api/tasks/${id}/position`, { status, order }, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+
+            return response.data;
+        } catch (error) {
+            const errorMessage =
+                error.response?.data?.message || 'Error al actualizar la posición de la tarea';
+            return rejectWithValue(errorMessage);
+        }
+    }
+);
+
 
 // Eliminar una tarea
 export const deleteTask = createAsyncThunk('tasks/deleteTask', async (id, { rejectWithValue }) => {
@@ -93,6 +114,14 @@ const taskSlice = createSlice({
                 state.loading = false;
                 state.error = action.payload;
             })
+            .addCase(updateTaskPosition.fulfilled, (state, action) => {
+                const updatedTask = action.payload;
+                const index = state.tasks.findIndex((task) => task._id === updatedTask._id);
+
+                if (index !== -1) {
+                    state.tasks[index] = updatedTask; // Actualizar la tarea con la nueva posición
+                }
+            })
             .addCase(createTask.fulfilled, (state, action) => {
                 state.tasks.push(action.payload);
             })
@@ -107,6 +136,7 @@ const taskSlice = createSlice({
             .addCase(deleteTask.fulfilled, (state, action) => {
                 state.tasks = state.tasks.filter((task) => task._id !== action.payload);
             });
+
     },
 });
 
