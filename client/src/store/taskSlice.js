@@ -99,7 +99,26 @@ export const deleteTask = createAsyncThunk('tasks/deleteTask', async (id, { reje
 const taskSlice = createSlice({
     name: 'tasks',
     initialState: { tasks: [], loading: false, error: null },
-    reducers: {},
+    reducers: {
+        updateLocalOrder: (state, action) => {
+            const { tasks, status } = action.payload;
+            state.tasks = state.tasks.map((task) =>
+                task.status === status ? tasks.find((t) => t._id === task._id) || task : task
+            );
+        },
+        updateLocalMove: (state, action) => {
+            const { sourceTasks, destinationTasks, sourceColumn, destinationColumn } = action.payload;
+            state.tasks = state.tasks.map((task) => {
+                if (task.status === sourceColumn) {
+                    return sourceTasks.find((t) => t._id === task._id) || task;
+                }
+                if (task.status === destinationColumn) {
+                    return destinationTasks.find((t) => t._id === task._id) || task;
+                }
+                return task;
+            });
+        },
+    },
     extraReducers: (builder) => {
         builder
             .addCase(fetchTasks.pending, (state) => {
