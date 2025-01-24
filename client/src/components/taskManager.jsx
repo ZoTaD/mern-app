@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchTasks, createTask, updateTask, deleteTask } from '../store/taskSlice';
+import { fetchTasks, createTask, updateTask, deleteTask, updateTaskPosition  } from '../store/taskSlice';
 import { Card, Form, Button, Container, Row, Col } from 'react-bootstrap';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import styles from '../styles/TaskManager.module.css';
