@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchTasks, createTask, updateTask, deleteTask, updateTaskPosition  } from '../store/taskSlice';
+import { fetchTasks, createTask, updateTask, deleteTask, updateTaskPosition } from '../store/taskSlice';
 import { Card, Form, Button, Container, Row, Col } from 'react-bootstrap';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import styles from '../styles/TaskManager.module.css';
@@ -75,7 +75,7 @@ function TaskManager() {
     const handleDragEnd = (result) => {
         const { source, destination } = result;
 
-        if (!destination) return;
+        if (!destination) return; // Si no hay destino, no hacer nada
 
         const sourceColumn = source.droppableId;
         const destinationColumn = destination.droppableId;
@@ -84,36 +84,37 @@ function TaskManager() {
 
         if (sourceColumn === destinationColumn) {
             // Cambiar posición dentro de la misma columna
-            const columnTasks = [...groupedTasks[sourceColumn]];
+            const columnTasks = [...groupedTasks[sourceColumn]]; // Copia del array
             const [movedTask] = columnTasks.splice(sourceIndex, 1);
             columnTasks.splice(destinationIndex, 0, movedTask);
 
             // Actualizar el orden localmente
             columnTasks.forEach((task, index) => {
-                task.order = index;
-                dispatch(updateTaskPosition({ id: task._id, status: task.status, order: task.order }));
+                const updatedTask = { ...task, order: index }; // Copia y actualización
+                dispatch(updateTaskPosition({ id: updatedTask._id, status: updatedTask.status, order: updatedTask.order }));
             });
         } else {
             // Mover tarea a otra columna
-            const sourceTasks = [...groupedTasks[sourceColumn]];
-            const destinationTasks = [...groupedTasks[destinationColumn]];
+            const sourceTasks = [...groupedTasks[sourceColumn]]; // Copia del array de origen
+            const destinationTasks = [...groupedTasks[destinationColumn]]; // Copia del array de destino
             const [movedTask] = sourceTasks.splice(sourceIndex, 1);
 
-            movedTask.status = destinationColumn;
-            destinationTasks.splice(destinationIndex, 0, movedTask);
+            const updatedTask = { ...movedTask, status: destinationColumn }; // Crear una copia actualizada
+            destinationTasks.splice(destinationIndex, 0, updatedTask);
 
             // Actualizar el orden localmente
             sourceTasks.forEach((task, index) => {
-                task.order = index;
-                dispatch(updateTaskPosition({ id: task._id, status: task.status, order: task.order }));
+                const updatedTask = { ...task, order: index }; // Copia y actualización
+                dispatch(updateTaskPosition({ id: updatedTask._id, status: updatedTask.status, order: updatedTask.order }));
             });
 
             destinationTasks.forEach((task, index) => {
-                task.order = index;
-                dispatch(updateTaskPosition({ id: task._id, status: task.status, order: task.order }));
+                const updatedTask = { ...task, order: index }; // Copia y actualización
+                dispatch(updateTaskPosition({ id: updatedTask._id, status: updatedTask.status, order: updatedTask.order }));
             });
         }
     };
+
 
     // Agrupar tareas por su estado
     const groupedTasks = {
