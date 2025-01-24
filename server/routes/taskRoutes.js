@@ -77,6 +77,28 @@ router.put('/:id', authenticate, async (req, res) => {
     }
 });
 
+// Endpoint para actualizar la posición y columna de una tarea
+router.put('/:id/position', authenticate, async (req, res) => {
+    const { id } = req.params;
+    const { status, order } = req.body;
+
+    try {
+        const updatedTask = await Task.findOneAndUpdate(
+            { _id: id, user: req.userId },
+            { status, order },
+            { new: true }
+        );
+
+        if (!updatedTask) {
+            return res.status(404).json({ message: 'Tarea no encontrada o no autorizada' });
+        }
+
+        res.status(200).json(updatedTask);
+    } catch (error) {
+        res.status(500).json({ message: 'Error al actualizar la posición de la tarea' });
+    }
+});
+
 // Endpoint para eliminar una tarea
 router.delete('/:id', authenticate, async (req, res) => {
     const { id } = req.params;
