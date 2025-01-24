@@ -33,6 +33,27 @@ export const createTask = createAsyncThunk('tasks/createTask', async (task, { re
     }
 });
 
+// Actualizar una tarea
+export const updateTask = createAsyncThunk(
+    'tasks/updateTask',
+    async ({ id, data }, { rejectWithValue }) => {
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) throw new Error('Token no disponible');
+
+            const response = await axios.put(`${API_URL}/api/tasks/${id}`, data, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+
+            return response.data;
+        } catch (error) {
+            const errorMessage =
+                error.response?.data?.message || error.message || 'Error al actualizar la tarea';
+            return rejectWithValue(errorMessage);
+        }
+    }
+);
+
 // Actualizar posición y columna de una tarea
 export const updateTaskPosition = createAsyncThunk(
     'tasks/updateTaskPosition',
