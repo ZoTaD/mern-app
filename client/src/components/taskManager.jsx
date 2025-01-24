@@ -1,53 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchTasks, createTask, updateTask, deleteTask, updateTaskPosition } from '../store/taskSlice';
+import { fetchTasks, createTask, deleteTask, updateTaskPosition } from '../store/taskSlice';
 import { Card, Form, Button, Container, Row, Col } from 'react-bootstrap';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import styles from '../styles/TaskManager.module.css';
 import Swal from 'sweetalert2';
+import styles from '../styles/TaskManager.module.css';
 
 function TaskManager() {
     const dispatch = useDispatch();
-    const { tasks } = useSelector((state) => state.tasks);
+    const columns = useSelector((state) => state.tasks.columns); // Usar columnas directamente del estado
 
-    const [newTask, setNewTask] = useState({ title: '', description: '' });
-    const [editingTask, setEditingTask] = useState(null);
+    const [newTask, setNewTask] = useState({ title: '', description: '', status: 'Pendiente' });
 
     useEffect(() => {
         dispatch(fetchTasks());
     }, [dispatch]);
 
-    const formatDate = (dateString) => {
-        const options = { day: '2-digit', month: '2-digit', year: '2-digit' };
-        return new Date(dateString).toLocaleDateString('es-ES', options); // Formato DD/MM/AA
-    };
-
-    // Crear
     const handleCreateTask = (e) => {
         e.preventDefault();
-        const taskToCreate = {
-            ...newTask,
-            status: newTask.status || 'Pendiente', // Si no se especifica, usar 'Pendiente'
-        };
-        dispatch(createTask(taskToCreate));
+        dispatch(createTask(newTask));
         setNewTask({ title: '', description: '', status: 'Pendiente' });
     };
 
-    // Actualizar
-    const handleUpdateTask = async (e) => {
-        e.preventDefault();
-
-        // Creo un objeto con los datos actualizados
-        const updatedTask = {
-            ...newTask, // Incluir title, description y status
-        };
-
-        await dispatch(updateTask({ id: editingTask._id, data: updatedTask }));
-        setEditingTask(null);
-        setNewTask({ title: '', description: '', status: 'Pendiente' });
-    };
-
-    // Borrar
     const handleDeleteTask = (id) => {
         Swal.fire({
             title: '¿Estás seguro?',
@@ -66,40 +40,28 @@ function TaskManager() {
         });
     };
 
-    // Editar
-    const handleEditClick = (task) => {
-        setEditingTask(task);
-        setNewTask({ title: task.title, description: task.description, status: task.status, });
-    };
-
     const handleDragEnd = (result) => {
         const { source, destination } = result;
-
-        if (!destination) return; // Si no hay destino, salir
+        if (!destination) return;
 
         const sourceColumn = source.droppableId;
         const destinationColumn = destination.droppableId;
         const sourceIndex = source.index;
         const destinationIndex = destination.index;
 
-        // Copiar las columnas del estado actual
         const sourceTasks = [...columns[sourceColumn]];
-        const destinationTasks =
-            sourceColumn === destinationColumn
-                ? sourceTasks
-                : [...columns[destinationColumn]];
+        const destinationTasks = sourceColumn === destinationColumn
+            ? sourceTasks
+            : [...columns[destinationColumn]];
 
-        // Remover la tarea de la columna de origen
         const [movedTask] = sourceTasks.splice(sourceIndex, 1);
-
-        // Insertar la tarea en la nueva columna en la posición deseada
+        movedTask.status = destinationColumn; // Cambiar el estado
         destinationTasks.splice(destinationIndex, 0, movedTask);
 
-        // Actualizar órdenes locales
         sourceTasks.forEach((task, index) => (task.order = index));
         destinationTasks.forEach((task, index) => (task.order = index));
 
-        // Actualizar el estado local
+        // Actualizar estado local
         dispatch({
             type: 'tasks/updateColumns',
             payload: {
@@ -109,7 +71,7 @@ function TaskManager() {
             },
         });
 
-        // Confirmar actualización con el backend
+        // Actualizar en el backend
         dispatch(
             updateTaskPosition({
                 id: movedTask._id,
@@ -118,12 +80,9 @@ function TaskManager() {
             })
         ).catch((error) => {
             console.error('Error al actualizar en el backend:', error);
-
-            // Revertir cambios si el backend falla
-            dispatch(fetchTasks());
+            dispatch(fetchTasks()); // Revertir cambios
         });
     };
-
     // Agrupar tareas por su estado
     const groupedTasks = useSelector((state) => state.tasks.columns);
 
