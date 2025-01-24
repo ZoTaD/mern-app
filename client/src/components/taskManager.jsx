@@ -82,42 +82,38 @@ function TaskManager() {
         const sourceIndex = source.index;
         const destinationIndex = destination.index;
 
-        // Copias inmutables de las tareas
-        const sourceTasks = [...groupedTasks[sourceColumn]];
+        // Copiar las columnas del estado actual
+        const sourceTasks = [...columns[sourceColumn]];
         const destinationTasks =
             sourceColumn === destinationColumn
                 ? sourceTasks
-                : [...groupedTasks[destinationColumn]];
+                : [...columns[destinationColumn]];
 
-        // Remover la tarea del origen
+        // Remover la tarea de la columna de origen
         const [movedTask] = sourceTasks.splice(sourceIndex, 1);
 
-        // Actualizar su estado y posición
-        const updatedTask = {
-            ...movedTask,
-            status: destinationColumn,
-            order: destinationIndex,
-        };
+        // Insertar la tarea en la nueva columna en la posición deseada
+        destinationTasks.splice(destinationIndex, 0, movedTask);
 
-        // Insertar la tarea en la posición correcta en el destino
-        destinationTasks.splice(destinationIndex, 0, updatedTask);
+        // Actualizar órdenes locales
+        sourceTasks.forEach((task, index) => (task.order = index));
+        destinationTasks.forEach((task, index) => (task.order = index));
 
-        // Actualización local optimista
+        // Actualizar el estado local
         dispatch({
-            type: 'tasks/updateLocalMove',
+            type: 'tasks/updateColumns',
             payload: {
-                sourceTasks,
-                destinationTasks,
-                sourceColumn,
-                destinationColumn,
+                ...columns,
+                [sourceColumn]: sourceTasks,
+                [destinationColumn]: destinationTasks,
             },
         });
 
         // Confirmar actualización con el backend
         dispatch(
             updateTaskPosition({
-                id: updatedTask._id,
-                status: updatedTask.status,
+                id: movedTask._id,
+                status: destinationColumn,
                 order: destinationIndex,
             })
         ).catch((error) => {
@@ -129,72 +125,45 @@ function TaskManager() {
     };
 
     // Agrupar tareas por su estado
-    const groupedTasks = {
-        Pendiente: tasks.filter((task) => task.status === 'Pendiente').sort((a, b) => a.order - b.order),
-        'En Progreso': tasks
-            .filter((task) => task.status === 'En Progreso')
-            .sort((a, b) => a.order - b.order),
-        Completada: tasks
-            .filter((task) => task.status === 'Completada')
-            .sort((a, b) => a.order - b.order),
-    };
+    const groupedTasks = useSelector((state) => state.tasks.columns);
 
     return (
         <DragDropContext onDragEnd={handleDragEnd}>
             <Container>
                 <Row>
-                    <Col>
-                        <h2 className="text-center mb-4">Gestión de tareas</h2>
-                        <Form onSubmit={editingTask ? handleUpdateTask : handleCreateTask}>
-                            <Row>
-                                <Col md={3}>
-                                    <Form.Control
-                                        type="text"
-                                        placeholder="Título"
-                                        value={newTask.title}
-                                        onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
-                                        className={`${styles['input-glass']} mb-2`} // Aplicando estilo de vidrio
-                                    />
-                                </Col>
-                                <Col md={3}>
-                                    <Form.Control
-                                        type="text"
-                                        placeholder="Descripción"
-                                        value={newTask.description}
-                                        onChange={(e) => setNewTask({ ...newTask, description: e.target.value })}
-                                        className={`${styles['input-glass']} mb-2`} // Aplicando estilo de vidrio
-                                    />
-                                </Col>
-                                <Col md={3}>
-                                    <Form.Select
-                                        value={newTask.status}
-                                        onChange={(e) => setNewTask({ ...newTask, status: e.target.value })}
-                                        className={`${styles['select-glass']} mb-2`} // Aplicando estilo de vidrio
+                    {Object.keys(groupedTasks).map((column) => (
+                        <Col key={column} md={4}>
+                            <h3>{column}</h3>
+                            <Droppable droppableId={column}>
+                                {(provided) => (
+                                    <div
+                                        {...provided.droppableProps}
+                                        ref={provided.innerRef}
+                                        className={styles['droppable-column']}
                                     >
-                                        <option value="Pendiente">Pendiente</option>
-                                        <option value="En Progreso">En Progreso</option>
-                                        <option value="Completada">Completada</option>
-                                    </Form.Select>
-                                </Col>
-                                <Col md="auto">
-                                    <Button
-                                        type="submit"
-                                        className={`${styles['button-glass']} mb-2`} // Aplicando estilo de vidrio
-                                    >
-                                        {editingTask ? 'Actualizar' : 'Agregar'}
-                                    </Button>
-                                    {editingTask && (
-                                        <Button
-                                            onClick={() => setEditingTask(null)}
-                                            className={`${styles['button-glass']} mb-2 ms-2`} // Aplicando estilo de vidrio
-                                        >
-                                            Cancelar
-                                        </Button>
-                                    )}
-                                </Col>
-                            </Row>
-                        </Form>
-                    </Col>
+                                        {groupedTasks[column].map((task, index) => (
+                                            <Draggable key={task._id} draggableId={task._id} index={index}>
+                                                {(provided) => (
+                                                    <Card
+                                                        ref={provided.innerRef}
+                                                        {...provided.draggableProps}
+                                                        {...provided.dragHandleProps}
+                                                        className={styles['card-glass']}
+                                                    >
+                                                        <Card.Body>
+                                                            <h5>{task.title}</h5>
+                                                            <p>{task.description}</p>
+                                                        </Card.Body>
+                                                    </Card>
+                                                )}
+                                            </Draggable>
+                                        ))}
+                                        {provided.placeholder}
+                                    </div>
+                                )}
+                            </Droppable>
+                        </Col>
+                    ))}
                 </Row>
                 <Row className={styles['no-wrap-row']} >
                     {['Pendiente', 'En Progreso', 'Completada'].map((status) => (
