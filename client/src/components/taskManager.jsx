@@ -74,47 +74,63 @@ function TaskManager() {
 
     const handleDragEnd = (result) => {
         const { source, destination } = result;
-
-        if (!destination) return; // Si no hay destino, no hacer nada
-
+      
+        if (!destination) return; // Si no hay destino, salir
+      
         const sourceColumn = source.droppableId;
         const destinationColumn = destination.droppableId;
         const sourceIndex = source.index;
         const destinationIndex = destination.index;
-
+      
         if (sourceColumn === destinationColumn) {
-            // Cambiar posición dentro de la misma columna
-            const columnTasks = [...groupedTasks[sourceColumn]]; // Copia del array
-            const [movedTask] = columnTasks.splice(sourceIndex, 1);
-            columnTasks.splice(destinationIndex, 0, movedTask);
-
-            // Actualizar el orden localmente
-            columnTasks.forEach((task, index) => {
-                const updatedTask = { ...task, order: index }; // Copia y actualización
-                dispatch(updateTaskPosition({ id: updatedTask._id, status: updatedTask.status, order: updatedTask.order }));
-            });
+          // Cambiar posición dentro de la misma columna
+          const columnTasks = [...groupedTasks[sourceColumn]]; // Copia del array
+          const [movedTask] = columnTasks.splice(sourceIndex, 1);
+          columnTasks.splice(destinationIndex, 0, movedTask);
+      
+          // Actualizar el estado localmente de inmediato
+          dispatch({
+            type: 'tasks/updateLocalOrder',
+            payload: { tasks: columnTasks, status: sourceColumn },
+          });
+      
+          // Enviar la solicitud al backend
+          columnTasks.forEach((task, index) => {
+            const updatedTask = { ...task, order: index }; // Actualizar la posición
+            dispatch(updateTaskPosition({ id: updatedTask._id, status: updatedTask.status, order: updatedTask.order }));
+          });
         } else {
-            // Mover tarea a otra columna
-            const sourceTasks = [...groupedTasks[sourceColumn]]; // Copia del array de origen
-            const destinationTasks = [...groupedTasks[destinationColumn]]; // Copia del array de destino
-            const [movedTask] = sourceTasks.splice(sourceIndex, 1);
-
-            const updatedTask = { ...movedTask, status: destinationColumn }; // Crear una copia actualizada
-            destinationTasks.splice(destinationIndex, 0, updatedTask);
-
-            // Actualizar el orden localmente
-            sourceTasks.forEach((task, index) => {
-                const updatedTask = { ...task, order: index }; // Copia y actualización
-                dispatch(updateTaskPosition({ id: updatedTask._id, status: updatedTask.status, order: updatedTask.order }));
-            });
-
-            destinationTasks.forEach((task, index) => {
-                const updatedTask = { ...task, order: index }; // Copia y actualización
-                dispatch(updateTaskPosition({ id: updatedTask._id, status: updatedTask.status, order: updatedTask.order }));
-            });
+          // Mover tarea entre columnas
+          const sourceTasks = [...groupedTasks[sourceColumn]]; // Copia de tareas en origen
+          const destinationTasks = [...groupedTasks[destinationColumn]]; // Copia de tareas en destino
+          const [movedTask] = sourceTasks.splice(sourceIndex, 1);
+      
+          // Actualizar estado local para mover visualmente la tarea
+          const updatedTask = { ...movedTask, status: destinationColumn }; // Cambiar el status
+          destinationTasks.splice(destinationIndex, 0, updatedTask);
+      
+          dispatch({
+            type: 'tasks/updateLocalMove',
+            payload: {
+              sourceTasks,
+              destinationTasks,
+              sourceColumn,
+              destinationColumn,
+            },
+          });
+      
+          // Enviar las solicitudes al backend
+          sourceTasks.forEach((task, index) => {
+            const updatedTask = { ...task, order: index };
+            dispatch(updateTaskPosition({ id: updatedTask._id, status: updatedTask.status, order: updatedTask.order }));
+          });
+      
+          destinationTasks.forEach((task, index) => {
+            const updatedTask = { ...task, order: index };
+            dispatch(updateTaskPosition({ id: updatedTask._id, status: updatedTask.status, order: updatedTask.order }));
+          });
         }
-    };
-
+      };
 
     // Agrupar tareas por su estado
     const groupedTasks = {
