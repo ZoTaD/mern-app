@@ -74,63 +74,53 @@ function TaskManager() {
 
     const handleDragEnd = (result) => {
         const { source, destination } = result;
-      
+
         if (!destination) return; // Si no hay destino, salir
-      
+
         const sourceColumn = source.droppableId;
         const destinationColumn = destination.droppableId;
         const sourceIndex = source.index;
         const destinationIndex = destination.index;
-      
-        if (sourceColumn === destinationColumn) {
-          // Cambiar posición dentro de la misma columna
-          const columnTasks = [...groupedTasks[sourceColumn]]; // Copia del array
-          const [movedTask] = columnTasks.splice(sourceIndex, 1);
-          columnTasks.splice(destinationIndex, 0, movedTask);
-      
-          // Actualizar el estado localmente de inmediato
-          dispatch({
-            type: 'tasks/updateLocalOrder',
-            payload: { tasks: columnTasks, status: sourceColumn },
-          });
-      
-          // Enviar la solicitud al backend
-          columnTasks.forEach((task, index) => {
-            const updatedTask = { ...task, order: index }; // Actualizar la posición
-            dispatch(updateTaskPosition({ id: updatedTask._id, status: updatedTask.status, order: updatedTask.order }));
-          });
-        } else {
-          // Mover tarea entre columnas
-          const sourceTasks = [...groupedTasks[sourceColumn]]; // Copia de tareas en origen
-          const destinationTasks = [...groupedTasks[destinationColumn]]; // Copia de tareas en destino
-          const [movedTask] = sourceTasks.splice(sourceIndex, 1);
-      
-          // Actualizar estado local para mover visualmente la tarea
-          const updatedTask = { ...movedTask, status: destinationColumn }; // Cambiar el status
-          destinationTasks.splice(destinationIndex, 0, updatedTask);
-      
-          dispatch({
+
+        // Copiar tareas actuales agrupadas
+        const sourceTasks = [...groupedTasks[sourceColumn]];
+        const destinationTasks =
+            sourceColumn === destinationColumn
+                ? sourceTasks
+                : [...groupedTasks[destinationColumn]];
+
+        // Tarea que se mueve
+        const [movedTask] = sourceTasks.splice(sourceIndex, 1);
+
+        // Actualizar su posición y/o columna
+        const updatedTask = {
+            ...movedTask,
+            status: destinationColumn,
+            order: destinationIndex,
+        };
+
+        destinationTasks.splice(destinationIndex, 0, updatedTask);
+
+        // Actualizar el estado local
+        dispatch({
             type: 'tasks/updateLocalMove',
             payload: {
-              sourceTasks,
-              destinationTasks,
-              sourceColumn,
-              destinationColumn,
+                sourceTasks,
+                destinationTasks,
+                sourceColumn,
+                destinationColumn,
             },
-          });
-      
-          // Enviar las solicitudes al backend
-          sourceTasks.forEach((task, index) => {
-            const updatedTask = { ...task, order: index };
-            dispatch(updateTaskPosition({ id: updatedTask._id, status: updatedTask.status, order: updatedTask.order }));
-          });
-      
-          destinationTasks.forEach((task, index) => {
-            const updatedTask = { ...task, order: index };
-            dispatch(updateTaskPosition({ id: updatedTask._id, status: updatedTask.status, order: updatedTask.order }));
-          });
-        }
-      };
+        });
+
+        // Enviar una sola solicitud al backend para la tarea movida
+        dispatch(
+            updateTaskPosition({
+                id: updatedTask._id,
+                status: updatedTask.status,
+                order: destinationIndex,
+            })
+        );
+    };
 
     // Agrupar tareas por su estado
     const groupedTasks = {

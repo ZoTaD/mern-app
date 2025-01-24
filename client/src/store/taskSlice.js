@@ -108,6 +108,7 @@ const taskSlice = createSlice({
         },
         updateLocalMove: (state, action) => {
             const { sourceTasks, destinationTasks, sourceColumn, destinationColumn } = action.payload;
+
             state.tasks = state.tasks.map((task) => {
                 if (task.status === sourceColumn) {
                     return sourceTasks.find((t) => t._id === task._id) || task;
